@@ -1,4 +1,4 @@
-# phpub2twtxt
+# pbpush
 
 An php interface for publishing microblogposts to your selfhosted [twtxt.txt](https://github.com/buckket/twtxt)
 

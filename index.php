@@ -83,7 +83,7 @@ if(isset($_POST["sub"])){
 </head>
 <body>
   <h1>pdpush</h1>
-  <p>An interface for publishing microblogposts to your selfhosted twtxt.txt</p>
+  <p>An interface for publishing microblogposts to your selfhosted twtxt/picoblog</p>
   <?php if(isset($_GET["retry"])){echo '<div id="retry">Your author key isn\'t valid, please try again</div>';} ?>
   <form method="POST" class="column">
     <div id="posting">

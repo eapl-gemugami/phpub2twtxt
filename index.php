@@ -70,6 +70,11 @@ if (isset($_POST['sub'])) {
 			color:#222;
 			border:none;
 		}
+		textarea {
+			outline: none;
+			background:#9F9;
+			color:#222;
+		}
 		#posting{display:flex;}
 		#retry{margin:0 0 20px 0;border:solid 1px #f45;}
 		iframe{
@@ -87,7 +92,8 @@ if (isset($_POST['sub'])) {
 	<?php if(isset($_GET["retry"])){echo '<div id="retry">Your password isn\'t valid, check that!</div>';} ?>
 	<form method="POST" class="column">
 		<div id="posting">
-			<input type="textarea" name="new_post" autofocus placeholder="Write you twtxt post here">
+			<textarea id="new_post" name="new_post" rows="4" cols="50" autofocus placeholder="Write you twtxt post here">
+			</textarea>
 		</div>
 		<div id="posting">
 			<input type="password" name="pass" autofocus placeholder="Your password">

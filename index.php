@@ -72,8 +72,10 @@ if (isset($_POST['sub'])) {
 		}
 		textarea {
 			outline: none;
-			background:#9F9;
-			color:#222;
+			background:#222;
+			color:#ffe;
+			border:solid 1px #9F9;
+			margin-right:5px;
 		}
 		#posting{display:flex;}
 		#retry{margin:0 0 20px 0;border:solid 1px #f45;}
@@ -92,7 +94,7 @@ if (isset($_POST['sub'])) {
 	<?php if(isset($_GET["retry"])){echo '<div id="retry">Your password isn\'t valid, check that!</div>';} ?>
 	<form method="POST" class="column">
 		<div id="posting">
-			<textarea id="new_post" name="new_post" rows="4" cols="50" autofocus placeholder="Write you twtxt post here">
+			<textarea id="new_post" name="new_post" rows="4" cols="100" autofocus placeholder="Write you twtxt post here">
 			</textarea>
 		</div>
 		<div id="posting">

@@ -1,33 +1,26 @@
 <?php
 // Config - Setup this first
-$txt_file = '../twtxt.txt'; // File route
-$pass = ""; // Put your password's hash here
+
+// TODO: Change this to a .env file so it won't be uploaded in the repo
+$txt_file_path = '/var/www/html/twtxt.txt'; // File route
+$public_txt_file_path = 'https://eapl.mx/twtxt.txt';
+
+// Password hash (with password_hash function)
+$pass = '';
 
 if (isset($_POST["sub"])) {
   if (password_verify($_POST["pass"], $pass)) {
     $new_post = filter_input(INPUT_POST, 'new_post');
 
-    function id() {
-      $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      $randstring = '';
-      $i = 0;
-
-      while ($i <= 6) {
-        $randstring .= $characters[rand(0, strlen($characters))];
-        $i++;
-      }
-
-      return $randstring;
-    }
-
-    $id = id();
-
     if ($new_post) {
-      $contents = file_get_contents($txt_file);
-      $contents .= "\n" . date("Y-m-d\TH:i:s\Z") . "\t(#" . $id . ")\t" ;
+      $contents = file_get_contents($txt_file_path);
+      $contents .= "\n" . date("Y-m-d\TH:i:s\Z") . "\t";
       $contents .= "$new_post";
 
-      file_put_contents($txt_file, $contents);
+	// Check that your current user has permissions for this file
+	// Check also the user owner www-data for instance
+      $write_result = file_put_contents($txt_file_path, $contents);
+
       header("Refresh:0; url=?");
       exit;
     } else {
@@ -40,7 +33,7 @@ if (isset($_POST["sub"])) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>pdpush</title>
+  <title>phppub2twtxt</title>
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
   <style type="text/css">
     body{
@@ -96,10 +89,11 @@ if (isset($_POST["sub"])) {
       <input type="text" name="new_post" autofocus placeholder="Write you twtxt post here">
       <input type="submit" value="Post" name="sub">
     </div>
-    <input type="password" name="pass" autofocus placeholder="Your dynamic password">
+    <input type="password" name="pass" autofocus placeholder="Your dynamic password here">
   </form>
-  <iframe src="<?= $txt_file ?>" height="450"></iframe>
-  <footer><a href="https://github.com/luqaska/pdpush">source code</a></footer>
+  <p>A preview of your twtxt.txt</p>
+  <iframe src="<?= $public_txt_file_path ?>" height="450"></iframe>
+  <footer><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>
 </body>
 </html>
 <?php } ?>

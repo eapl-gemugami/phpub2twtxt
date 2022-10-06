@@ -94,8 +94,7 @@ if (isset($_POST['sub'])) {
 	<?php if(isset($_GET["retry"])){echo '<div id="retry">Your password isn\'t valid, check that!</div>';} ?>
 	<form method="POST" class="column">
 		<div id="posting">
-			<textarea id="new_post" name="new_post" rows="4" cols="100" autofocus placeholder="Write you twtxt post here">
-			</textarea>
+			<textarea id="new_post" name="new_post" rows="4" cols="100" autofocus placeholder="Write you twtxt post here"></textarea>
 		</div>
 		<div id="posting">
 			<input type="password" name="pass" autofocus placeholder="Your password">

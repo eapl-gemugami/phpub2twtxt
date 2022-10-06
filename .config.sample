@@ -1,0 +1,14 @@
+; phpub2twtxt
+; Copy this file into a .config file and edit the following settings
+
+[main_settings]
+; Check that your current user has permissions for this file
+; Check also the user owner is correct, www-data for instance
+txt_file_path = "/var/www/html/twtxt.txt"
+
+; Full URL for your public twtxt.txt file
+public_txt_url = "https://eapl.mx/twtxt.txt"
+
+; Get your password with the PHP function 'password_hash'
+; Check https://www.php.net/manual/en/function.password-hash.php
+master_password = ""

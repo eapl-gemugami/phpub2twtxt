@@ -1,38 +1,31 @@
-# pbpush
+# phpub2twtxt
+An PHP web interface to publish your microblogging in twtxt format [twtxt.txt](https://github.com/buckket/twtxt)
 
-An php interface for publishing microblogposts to your selfhosted [twtxt.txt](https://github.com/buckket/twtxt)
-
-![Screenshot](screenshot.png)
+[Insert a screenshot here]
 
 ## Setup and use
 
-1. Upload the files to you webserver via ftp
-	- index.html - the UI for the app
-	- config.php - the backend that writes to you txt file
-	- twtxt.txt
+1. Upload the files to you Web Server, or clone this project from Git.
+	- I'd recommend domain.com/twtxt/
 
-2. Edit config.php
-	- add the location of you twtxt.txt file
-	- you can place the file in and other folder that the files like "../twtxt.txt" to get it in the root of your URL
-	- default: twtxt.txt
-	
-3. Navigate to www.yourdomain.net/phpub2twtxt/index.php in you web browser and start microblogging.
+2. Copy .config.sample to .config and edit the file
+	- Add the absolute path of you twtxt.txt file in your file system, and in the public URL
+
+3. Navigate to domain.com/twtxt/index.php (or equivalent) in you web browser and start microblogging
 
 4. Tell the world to check out you awesome micro blog at www.yourdomain.net/twtxt.txt
 
-5. If you want/need to edit or delete you posts then you need to log in via ftp and just edit your text file.
-
 ## WARNING!
-**There is no build-in access control, so whoever know the URL of where you uploade these files will have the power to post as you to your twtxt.txt-file!!!!**
 
 **Use of this software is totally at one's own risk!!!**
 
 ## Issues
 
+* UX
+	- [ ] Ass
+
 * Security / login
-	- [ ] using access restriction to the folder via cPanel
-	- [ ] integrat it into yellow cms
-	- [ ] using some (other) .htaccess or .htpasswd magic
+	- [ ] Add Webauthn support
 
 * Missing line break depending on how the file was left the last time
 	- [x] add the line break as the first thing
@@ -41,25 +34,9 @@ An php interface for publishing microblogposts to your selfhosted [twtxt.txt](ht
 
 ## Ideas
 
-* Combine into just one .php file insted of two (UI and backend)
-
-* Find a better name, such as
-	- phpost
-	- picopub
-	- picopost
-	- twtpub	
-	- nanopub
-
-* Make a gif like: https://raw.githubusercontent.com/gabrieldejesus/register-with-txt/master/web-preview.gif
-	
-* Integrate with a nice render of twtxt
-	- https://github.com/hxii/picoblog
-	- https://github.com/schulle4u/yellow-extensions-schulle4u/tree/master/ticker
-	- https://github.com/Zegnat/site-notxte
-	- https://github.com/my5t3ry/twi
-
 # Meta
-Code based on [register-with-txt by Gabriel de Jesus](https://github.com/gabrieldejesus/register-with-txt)
-and bits of php to make it write just one line of twtxt compliant data at a time.
+Code based on [register-with-txt by Gabriel de Jesus](https://github.com/gabrieldejesus/register-with-txt) and [pbpush by Luqaska](https://github.com/Luqaska/pbpush)
+
+Done with bits of PHP to make it write just one line of twtxt compliant data at a time.
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.

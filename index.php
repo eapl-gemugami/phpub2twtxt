@@ -1,35 +1,41 @@
 <?php
-// Config
-$txt_file = '../twtxt.txt'; // Picoblog file route
+// Config - Setup this first
+$txt_file = '../twtxt.txt'; // File route
 $pass = ""; // Put your password's hash here
 
-
-if(isset($_POST["sub"])){
-  if(password_verify($_POST["pass"], $pass)){
+if (isset($_POST["sub"])) {
+  if (password_verify($_POST["pass"], $pass)) {
     $new_post = filter_input(INPUT_POST, 'new_post');
-    function id(){
+
+    function id() {
       $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      $randstring = ''; $i=0;
-      while ($i <= 6){
+      $randstring = '';
+      $i = 0;
+
+      while ($i <= 6) {
         $randstring .= $characters[rand(0, strlen($characters))];
         $i++;
       }
+
       return $randstring;
     }
-    $id=id();
-    if($new_post){
+
+    $id = id();
+
+    if ($new_post) {
       $contents = file_get_contents($txt_file);
       $contents .= "\n" . date("Y-m-d\TH:i:s\Z") . "\t(#" . $id . ")\t" ;
       $contents .= "$new_post";
+
       file_put_contents($txt_file, $contents);
       header("Refresh:0; url=?");
       exit;
-    }else{
+    } else {
       echo "Opps something went wrong...\n\nCheck the error_log on the server";
       exit;
     }
-  }else{header("location: ?retry");}
-}else{ ?>
+  } else{ header("location: ?retry"); }
+} else { ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,15 +88,15 @@ if(isset($_POST["sub"])){
   </style>
 </head>
 <body>
-  <h1>pdpush</h1>
-  <p>An interface for publishing microblogposts to your selfhosted twtxt/picoblog</p>
+  <h1>phppub2twtxt</h1>
+  <p>An interface for publishing quickly to your twtxt.txt file</p>
   <?php if(isset($_GET["retry"])){echo '<div id="retry">Your author key isn\'t valid, please try again</div>';} ?>
   <form method="POST" class="column">
     <div id="posting">
       <input type="text" name="new_post" autofocus placeholder="Write you twtxt post here">
       <input type="submit" value="Post" name="sub">
     </div>
-    <input type="password" name="pass" autofocus placeholder="Author key">
+    <input type="password" name="pass" autofocus placeholder="Your dynamic password">
   </form>
   <iframe src="<?= $txt_file ?>" height="450"></iframe>
   <footer><a href="https://github.com/luqaska/pdpush">source code</a></footer>

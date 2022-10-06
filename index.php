@@ -87,7 +87,9 @@ if (isset($_POST['sub'])) {
 	<?php if(isset($_GET["retry"])){echo '<div id="retry">Your password isn\'t valid, check that!</div>';} ?>
 	<form method="POST" class="column">
 		<div id="posting">
-			<input type="text" name="new_post" autofocus placeholder="Write you twtxt post here">
+			<input type="textarea" name="new_post" autofocus placeholder="Write you twtxt post here">
+		</div>
+		<div id="posting">
 			<input type="password" name="pass" autofocus placeholder="Your password">
 			<input type="submit" value="Post" name="sub">
 		</div>
@@ -99,7 +101,7 @@ if (isset($_POST['sub'])) {
 	</p>
 	-->
 	<p>
-		<a href="<?= $public_txt_file_path ?>">Your twtxt.txt file</a>
+		<a href="<?= $public_txt_url ?>">Your twtxt.txt file</a>
 	</p>
 	<footer><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>
 </body>

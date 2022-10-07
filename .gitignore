@@ -1,1 +1,5 @@
 .config
+
+# Composer
+composer.phar
+/vendor/

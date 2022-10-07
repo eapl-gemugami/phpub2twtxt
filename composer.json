@@ -1,0 +1,5 @@
+{
+	"require": {
+		"lbuchs/webauthn": "1.0.*"
+	}
+}

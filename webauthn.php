@@ -38,7 +38,7 @@ require_once 'vendor/autoload.php';
 try {
 	session_start();
 
-	// read get argument and post body
+	// Read get argument and post body
 	$fn = filter_input(INPUT_GET, 'fn');
 	$requireResidentKey = !!filter_input(INPUT_GET, 'requireResidentKey');
 	$userVerification = filter_input(INPUT_GET, 'userVerification', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -57,7 +57,6 @@ try {
 	}
 
 	if ($fn !== 'getStoredDataHtml') {
-
 		// Formats
 		$formats = array();
 		if (filter_input(INPUT_GET, 'fmt_android-key')) {
@@ -90,13 +89,13 @@ try {
 			}
 		}
 
-		// types selected on front end
+		// Types selected on front end
 		$typeUsb = !!filter_input(INPUT_GET, 'type_usb');
 		$typeNfc = !!filter_input(INPUT_GET, 'type_nfc');
 		$typeBle = !!filter_input(INPUT_GET, 'type_ble');
 		$typeInt = !!filter_input(INPUT_GET, 'type_int');
 
-		// cross-platform: true, if type internal is not allowed
+		// Cross-platform: true, if type internal is not allowed
 		//                 false, if only internal is allowed
 		//                 null, if internal and cross-platform is allowed
 		$crossPlatformAttachment = null;
@@ -107,12 +106,11 @@ try {
 			$crossPlatformAttachment = false;
 		}
 
-
-		// new Instance of the server library.
+		// New Instance of the server library.
 		// make sure that $rpId is the domain name.
 		$WebAuthn = new lbuchs\WebAuthn\WebAuthn('WebAuthn Library', $rpId, $formats);
 
-		// add root certificates to validate new registrations
+		// Add root certificates to validate new registrations
 		if (filter_input(INPUT_GET, 'solo')) {
 			$WebAuthn->addRootCertificates('rootCertificates/solo.pem');
 		}
@@ -135,13 +133,11 @@ try {
 		if (filter_input(INPUT_GET, 'mds')) {
 			$WebAuthn->addRootCertificates('rootCertificates/mds');
 		}
-
 	}
 
 	// ------------------------------------
-	// request for create arguments
+	// Request for create arguments
 	// ------------------------------------
-
 	if ($fn === 'getCreateArgs') {
 		$createArgs = $WebAuthn->getCreateArgs(\hex2bin($userId), $userName, $userDisplayName, 20, $requireResidentKey, $userVerification, $crossPlatformAttachment);
 
@@ -151,12 +147,9 @@ try {
 		// save challange to session. you have to deliver it to processGet later.
 		$_SESSION['challenge'] = $WebAuthn->getChallenge();
 
-
-
 	// ------------------------------------
-	// request for get arguments
+	// Request for get arguments
 	// ------------------------------------
-
 	} else if ($fn === 'getGetArgs') {
 		$ids = array();
 
@@ -166,7 +159,7 @@ try {
 			}
 
 		} else {
-			// load registrations from session stored there by processCreate.
+			// Load registrations from session stored there by processCreate.
 			// normaly you have to load the credential Id's for a username
 			// from the database.
 			if (is_array($_SESSION['registrations'])) {
@@ -178,7 +171,7 @@ try {
 			}
 
 			if (count($ids) === 0) {
-				throw new Exception('no registrations in session for userId ' . $userId);
+				throw new Exception('No registrations in session for userId ' . $userId);
 			}
 		}
 
@@ -187,15 +180,12 @@ try {
 		header('Content-Type: application/json');
 		print(json_encode($getArgs));
 
-		// save challange to session. you have to deliver it to processGet later.
+		// Save challange to session. you have to deliver it to processGet later.
 		$_SESSION['challenge'] = $WebAuthn->getChallenge();
 
-
-
 	// ------------------------------------
-	// process create
+	// Process create
 	// ------------------------------------
-
 	} else if ($fn === 'processCreate') {
 		$clientDataJSON = base64_decode($post->clientDataJSON);
 		$attestationObject = base64_decode($post->attestationObject);
@@ -207,7 +197,7 @@ try {
 		// with the user name.
 		$data = $WebAuthn->processCreate($clientDataJSON, $attestationObject, $challenge, $userVerification === 'required', true, false);
 
-		// add user infos
+		// Add user infos
 		$data->userId = $userId;
 		$data->userName = $userName;
 		$data->userDisplayName = $userDisplayName;
@@ -229,12 +219,9 @@ try {
 		header('Content-Type: application/json');
 		print(json_encode($return));
 
-
-
 	// ------------------------------------
-	// proccess get
+	// Proccess get
 	// ------------------------------------
-
 	} else if ($fn === 'processGet') {
 		$clientDataJSON = base64_decode($post->clientDataJSON);
 		$authenticatorData = base64_decode($post->authenticatorData);
@@ -244,7 +231,7 @@ try {
 		$challenge = $_SESSION['challenge'];
 		$credentialPublicKey = null;
 
-		// looking up correspondending public key of the credential id
+		// Looking up correspondending public key of the credential id
 		// you should also validate that only ids of the given user name
 		// are taken for the login.
 		if (is_array($_SESSION['registrations'])) {
@@ -260,12 +247,12 @@ try {
 			throw new Exception('Public Key for credential ID not found!');
 		}
 
-		// if we have resident key, we have to verify that the userHandle is the provided userId at registration
+		// If we have resident key, we have to verify that the userHandle is the provided userId at registration
 		if ($requireResidentKey && $userHandle !== hex2bin($reg->userId)) {
 			throw new \Exception('userId doesnt match (is ' . bin2hex($userHandle) . ' but expect ' . $reg->userId . ')');
 		}
 
-		// process the get request. throws WebAuthnException if it fails
+		// Process the get request. throws WebAuthnException if it fails
 		$WebAuthn->processGet($clientDataJSON, $authenticatorData, $signature, $credentialPublicKey, $challenge, null, $userVerification === 'required');
 
 		$return = new stdClass();
@@ -275,9 +262,8 @@ try {
 		print(json_encode($return));
 
 	// ------------------------------------
-	// proccess clear registrations
+	// Proccess clear registrations
 	// ------------------------------------
-
 	} else if ($fn === 'clearRegistrations') {
 		$_SESSION['registrations'] = null;
 		$_SESSION['challenge'] = null;
@@ -290,9 +276,8 @@ try {
 		print(json_encode($return));
 
 	// ------------------------------------
-	// display stored data as HTML
+	// Display stored data as HTML
 	// ------------------------------------
-
 	} else if ($fn === 'getStoredDataHtml') {
 		$html = '<!DOCTYPE html>' . "\n";
 		$html .= '<html><head><style>tr:nth-child(even){background-color: #f2f2f2;}</style></head>';
@@ -305,16 +290,18 @@ try {
 
 					if (is_bool($value)) {
 						$value = $value ? 'yes' : 'no';
-
 					} else if (is_null($value)) {
 						$value = 'null';
-
 					} else if (is_object($value)) {
 						$value = chunk_split(strval($value), 64);
-
 					} else if (is_string($value) && strlen($value) > 0 && htmlspecialchars($value) === '') {
 						$value = chunk_split(bin2hex($value), 64);
 					}
+
+					if ($key === 'credentialId' || $key === 'AAGUID') {
+						$value = chunk_split(bin2hex($value), 64);
+					}
+
 					$html .= '<tr><td>' . htmlspecialchars($key) . '</td><td style="font-family:monospace;">' . nl2br(htmlspecialchars($value)) . '</td>';
 				}
 				$html .= '</table>';
@@ -326,37 +313,7 @@ try {
 
 		header('Content-Type: text/html');
 		print $html;
-
-	// ------------------------------------
-	// get root certs from FIDO Alliance Metadata Service
-	// ------------------------------------
-
-	} else if ($fn === 'queryFidoMetaDataService') {
-
-		$mdsFolder = 'rootCertificates/mds';
-		$success = false;
-		$msg = null;
-
-		// fetch only 1x / 24h
-		$lastFetch = \is_file($mdsFolder .  '/lastMdsFetch.txt') ? \strtotime(\file_get_contents($mdsFolder .  '/lastMdsFetch.txt')) : 0;
-		if ($lastFetch + (3600*48) < \time()) {
-			$cnt = $WebAuthn->queryFidoMetaDataService($mdsFolder);
-			$success = true;
-			\file_put_contents($mdsFolder .  '/lastMdsFetch.txt', date('r'));
-			$msg = 'successfully queried FIDO Alliance Metadata Service - ' . $cnt . ' certificates downloaded.';
-
-		} else {
-			$msg = 'Fail: last fetch was at ' . date('r', $lastFetch) . ' - fetch only 1x every 48h';
-		}
-
-		$return = new stdClass();
-		$return->success = $success;
-		$return->msg = $msg;
-
-		header('Content-Type: application/json');
-		print(json_encode($return));
 	}
-
 } catch (Throwable $ex) {
 	$return = new stdClass();
 	$return->success = false;

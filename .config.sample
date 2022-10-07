@@ -11,4 +11,6 @@ public_txt_url = "https://eapl.mx/twtxt.txt"
 
 ; Get your password with the PHP function 'password_hash'
 ; Check https://www.php.net/manual/en/function.password-hash.php
+; For example:
+; echo password_hash("123", PASSWORD_DEFAULT);
 master_password = ""

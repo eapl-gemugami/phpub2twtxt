@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <!--
 Copyright (C) 2018 Lukas Buchs
-license https://github.com/lbuchs/WebAuthn/blob/master/LICENSE MIT
+Edits (C) 2022 Emmanuel Parada Licea (eapl.mx)
+License https://github.com/lbuchs/WebAuthn/blob/master/LICENSE MIT
 -->
 <html>
 	<head>
@@ -9,7 +10,7 @@ license https://github.com/lbuchs/WebAuthn/blob/master/LICENSE MIT
 		<meta charset="UTF-8">
 		<script>
 		/**
-		 * creates a new FIDO2 registration
+		 * Creates a new FIDO2 registration
 		 * @returns {undefined}
 		 */
 		function newRegistration() {
@@ -174,7 +175,7 @@ license https://github.com/lbuchs/WebAuthn/blob/master/LICENSE MIT
 		}
 
 		/**
-		 * convert RFC 1342-like base64 strings to array buffer
+		 * Convert RFC 1342-like Base64 strings to ArrayBuffer
 		 * @param {mixed} obj
 		 * @returns {undefined}
 		 */
@@ -213,7 +214,7 @@ license https://github.com/lbuchs/WebAuthn/blob/master/LICENSE MIT
 			let bytes = new Uint8Array(buffer);
 			let len = bytes.byteLength;
 			for (let i = 0; i < len; i++) {
-				binary += String.fromCharCode( bytes[ i ] );
+				binary += String.fromCharCode(bytes[i]);
 			}
 			return window.btoa(binary);
 		}
@@ -272,7 +273,7 @@ license https://github.com/lbuchs/WebAuthn/blob/master/LICENSE MIT
 		}
 
 		/**
-		 * force https on load
+		 * Force HTTPS on load
 		 * @returns {undefined}
 		 */
 		window.onload = function() {
@@ -284,7 +285,6 @@ license https://github.com/lbuchs/WebAuthn/blob/master/LICENSE MIT
 				document.getElementById('rpId').value = location.hostname;
 			}
 		}
-
 		</script>
 		<style>
 			body {
@@ -312,7 +312,6 @@ license https://github.com/lbuchs/WebAuthn/blob/master/LICENSE MIT
 				display: flex;
 				flex-direction: column;
 			}
-
 			.splitter > .serverPreview iframe {
 				width: 700px;
 				flex: 1;
@@ -321,8 +320,7 @@ license https://github.com/lbuchs/WebAuthn/blob/master/LICENSE MIT
 		</style>
 	</head>
 	<body>
-		<h1 style="margin: 40px 10px 2px 0;">lbuchs/WebAuthn</h1>
-		<div style="font-style: italic;">A simple PHP WebAuthn (FIDO2) server library.</div>
+		<h1 style="margin: 40px 10px 2px 0;">Passkey login</h1>
 		<div class="splitter">
 			<div class="form">
 				<div>

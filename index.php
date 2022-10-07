@@ -36,57 +36,7 @@ if (isset($_POST['sub'])) {
 	<meta charset="UTF-8">
 	<title>phpub2twtxt</title>
 	<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
-	<style type="text/css">
-		body{
-			margin:1em;
-			background-color:#333;
-			color:#FFE;
-			font-family:-apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
-			font-size:1em;
-			font-weight:400;
-			line-height:1.6;
-			max-width:800px;
-			margin:0 auto;
-		}
-		a{color:#9F9;text-decoration:none;}
-		a:hover{color:#9F9;text-decoration:underline;}
-		form{align-content:center;}
-		form input,#retry{
-			font-size:1.2em;
-			border-radius:2px;
-			padding:10px;
-		}
-		form input[type=text],form input[type=password]{
-			flex-grow:1;
-			background:#222;
-			color:#ffe;
-			border:solid 1px #9F9;
-			margin-right:5px;
-		}
-		form input[type=password]{font-size:90%;}
-		form input[type=submit]{
-			margin-left:5px;
-			background:#9F9;
-			color:#222;
-			border:none;
-		}
-		textarea {
-			outline: none;
-			background:#222;
-			color:#ffe;
-			border:solid 1px #9F9;
-			margin-right:5px;
-		}
-		#posting{display:flex;}
-		#retry{margin:0 0 20px 0;border:solid 1px #f45;}
-		iframe{
-			border:none;
-			margin-top:1em;
-			background-color:#ffe;
-			width:100%;
-		}
-		footer{font-size:0.9em;text-align:right;}
-	</style>
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 	<h1>phpub2twtxt</h1>

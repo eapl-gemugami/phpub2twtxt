@@ -1,0 +1,64 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "8cf7e687727d42d34bd890057d2a3362",
+    "packages": [
+        {
+            "name": "lbuchs/webauthn",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lbuchs/WebAuthn.git",
+                "reference": "6bc7f0f0ac8d97815a02010c3d0f013e27245f25"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lbuchs/WebAuthn/zipball/6bc7f0f0ac8d97815a02010c3d0f013e27245f25",
+                "reference": "6bc7f0f0ac8d97815a02010c3d0f013e27245f25",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "lbuchs\\WebAuthn\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lukas Buchs",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple PHP WebAuthn (FIDO2) server library",
+            "homepage": "https://github.com/lbuchs/webauthn",
+            "keywords": [
+                "Authentication",
+                "webauthn"
+            ],
+            "support": {
+                "issues": "https://github.com/lbuchs/WebAuthn/issues",
+                "source": "https://github.com/lbuchs/WebAuthn/tree/v1.0.0"
+            },
+            "time": "2021-12-13T08:46:42+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.2.0"
+}

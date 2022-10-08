@@ -9,6 +9,12 @@ $txt_file_path = $config['txt_file_path']; // File route
 $public_txt_url = $config['public_txt_url'];
 $pass = $config['master_password'];
 
+session_start();
+
+if (!isset($_SESSION['valid_session']))  {
+	header("location: login.html");
+}
+
 if (isset($_POST['sub'])) {
 	if (password_verify($_POST['pass'], $pass)) {
 		$new_post = filter_input(INPUT_POST, 'new_post');

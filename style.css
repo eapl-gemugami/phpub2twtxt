@@ -31,6 +31,15 @@ form input[type=submit]{
 	color:#222;
 	border:none;
 }
+button{
+	font-size:1.2em;
+	border-radius:2px;
+	padding:10px;
+	margin-left:5px;
+	background:#9F9;
+	color:#222;
+	border:none;
+}
 textarea {
 	outline: none;
 	background:#222;

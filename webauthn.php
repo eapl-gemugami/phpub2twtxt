@@ -35,21 +35,13 @@
 
 require_once 'vendor/autoload.php';
 
+define('TIMEOUT', 20);
+
 try {
 	session_start();
 
 	// Read get argument and post body
 	$fn = filter_input(INPUT_GET, 'fn');
-	$requireResidentKey = !!filter_input(INPUT_GET, 'requireResidentKey');
-	$userVerification = filter_input(INPUT_GET, 'userVerification', FILTER_SANITIZE_SPECIAL_CHARS);
-
-	$userId = filter_input(INPUT_GET, 'userId', FILTER_SANITIZE_SPECIAL_CHARS);
-	$userName = filter_input(INPUT_GET, 'userName', FILTER_SANITIZE_SPECIAL_CHARS);
-	$userDisplayName = filter_input(INPUT_GET, 'userDisplayName', FILTER_SANITIZE_SPECIAL_CHARS);
-
-	$userId = preg_replace('/[^0-9a-f]/i', '', $userId);
-	$userName = preg_replace('/[^0-9a-z]/i', '', $userName);
-	$userDisplayName = preg_replace('/[^0-9a-z öüäéèàÖÜÄÉÈÀÂÊÎÔÛâêîôû]/i', '', $userDisplayName);
 
 	$post = trim(file_get_contents('php://input'));
 	if ($post) {
@@ -57,43 +49,18 @@ try {
 	}
 
 	if ($fn !== 'getStoredDataHtml') {
-		// Formats
 		$formats = array();
-		if (filter_input(INPUT_GET, 'fmt_android-key')) {
-			$formats[] = 'android-key';
-		}
-		if (filter_input(INPUT_GET, 'fmt_android-safetynet')) {
-			$formats[] = 'android-safetynet';
-		}
-		if (filter_input(INPUT_GET, 'fmt_apple')) {
-			$formats[] = 'apple';
-		}
-		if (filter_input(INPUT_GET, 'fmt_fido-u2f')) {
-			$formats[] = 'fido-u2f';
-		}
-		if (filter_input(INPUT_GET, 'fmt_none')) {
-			$formats[] = 'none';
-		}
-		if (filter_input(INPUT_GET, 'fmt_packed')) {
-			$formats[] = 'packed';
-		}
-		if (filter_input(INPUT_GET, 'fmt_tpm')) {
-			$formats[] = 'tpm';
-		}
-
-		$rpId = 'localhost';
-		if (filter_input(INPUT_GET, 'rpId')) {
-			$rpId = filter_input(INPUT_GET, 'rpId', FILTER_VALIDATE_DOMAIN);
-			if ($rpId === false) {
-				throw new Exception('invalid relying party ID');
-			}
-		}
+		$formats[] = 'android-key';
+		$formats[] = 'android-safetynet';
+		$formats[] = 'apple';
+		$formats[] = 'packed';
+		$formats[] = 'tpm';
 
 		// Types selected on front end
-		$typeUsb = !!filter_input(INPUT_GET, 'type_usb');
-		$typeNfc = !!filter_input(INPUT_GET, 'type_nfc');
-		$typeBle = !!filter_input(INPUT_GET, 'type_ble');
-		$typeInt = !!filter_input(INPUT_GET, 'type_int');
+		$typeUsb = true;
+		$typeNfc = true;
+		$typeBle = true;
+		$typeInt = true;
 
 		// Cross-platform: true, if type internal is not allowed
 		//                 false, if only internal is allowed
@@ -106,45 +73,35 @@ try {
 			$crossPlatformAttachment = false;
 		}
 
-		// New Instance of the server library.
-		// make sure that $rpId is the domain name.
-		$WebAuthn = new lbuchs\WebAuthn\WebAuthn('WebAuthn Library', $rpId, $formats);
+		// Relying party
+		$rpId = 'eapl.mx';
 
-		// Add root certificates to validate new registrations
-		if (filter_input(INPUT_GET, 'solo')) {
-			$WebAuthn->addRootCertificates('rootCertificates/solo.pem');
-		}
-		if (filter_input(INPUT_GET, 'apple')) {
-			$WebAuthn->addRootCertificates('rootCertificates/apple.pem');
-		}
-		if (filter_input(INPUT_GET, 'yubico')) {
-			$WebAuthn->addRootCertificates('rootCertificates/yubico.pem');
-		}
-		if (filter_input(INPUT_GET, 'hypersecu')) {
-			$WebAuthn->addRootCertificates('rootCertificates/hypersecu.pem');
-		}
-		if (filter_input(INPUT_GET, 'google')) {
-			$WebAuthn->addRootCertificates('rootCertificates/globalSign.pem');
-			$WebAuthn->addRootCertificates('rootCertificates/googleHardware.pem');
-		}
-		if (filter_input(INPUT_GET, 'microsoft')) {
-			$WebAuthn->addRootCertificates('rootCertificates/microsoftTpmCollection.pem');
-		}
-		if (filter_input(INPUT_GET, 'mds')) {
-			$WebAuthn->addRootCertificates('rootCertificates/mds');
-		}
+		// New Instance of the server library. Make sure that $rpId is the domain name.
+		$WebAuthn = new lbuchs\WebAuthn\WebAuthn('WebAuthn Library', $rpId, $formats);
 	}
 
 	// ------------------------------------
 	// Request for create arguments
 	// ------------------------------------
-	if ($fn === 'getCreateArgs') {
-		$createArgs = $WebAuthn->getCreateArgs(\hex2bin($userId), $userName, $userDisplayName, 20, $requireResidentKey, $userVerification, $crossPlatformAttachment);
+	if ($fn === 'createArgs') {
+		// This is a random userId
+		$userId = '6f333511393d6e784e550218b66c3e09';
+		$userName = 'master';
+		$userDisplayName = 'master';
+		$requiresResidentKey = false; // Client-side discoverable Credential
+		$userVerification = true;
+		$crossPlatformAttachment = null;
+
+		// Check parameters here:
+		// https://github.com/lbuchs/WebAuthn/blob/master/src/WebAuthn.php#L125
+		$createArgs = $WebAuthn->getCreateArgs(
+			\hex2bin($userId), $userName, $userDisplayName, TIMEOUT, $requireResidentKey, $userVerification, $crossPlatformAttachment
+		);
 
 		header('Content-Type: application/json');
 		print(json_encode($createArgs));
 
-		// save challange to session. you have to deliver it to processGet later.
+		// Save challange to session. You have to deliver it to processGet later.
 		$_SESSION['challenge'] = $WebAuthn->getChallenge();
 
 	// ------------------------------------
@@ -153,29 +110,14 @@ try {
 	} else if ($fn === 'getGetArgs') {
 		$ids = array();
 
-		if ($requireResidentKey) {
-			if (!is_array($_SESSION['registrations']) || count($_SESSION['registrations']) === 0) {
-				throw new Exception('we do not have any registrations in session to check the registration');
-			}
+		$data = unserialize(file_get_contents('registration.bin'));
+		$ids[] = $data->credentialId;
 
-		} else {
-			// Load registrations from session stored there by processCreate.
-			// normaly you have to load the credential Id's for a username
-			// from the database.
-			if (is_array($_SESSION['registrations'])) {
-				foreach ($_SESSION['registrations'] as $reg) {
-					if ($reg->userId === $userId) {
-						$ids[] = $reg->credentialId;
-					}
-				}
-			}
+		$userVerification = true;
 
-			if (count($ids) === 0) {
-				throw new Exception('No registrations in session for userId ' . $userId);
-			}
-		}
-
-		$getArgs = $WebAuthn->getGetArgs($ids, 20, $typeUsb, $typeNfc, $typeBle, $typeInt, $userVerification);
+		$getArgs = $WebAuthn->getGetArgs(
+			$ids, TIMEOUT, $typeUsb, $typeNfc, $typeBle, $typeInt, $userVerification
+		);
 
 		header('Content-Type: application/json');
 		print(json_encode($getArgs));
@@ -187,29 +129,66 @@ try {
 	// Process create
 	// ------------------------------------
 	} else if ($fn === 'processCreate') {
+		// Check parameters here:
+		// https://github.com/lbuchs/WebAuthn/blob/master/src/WebAuthn.php#L277
 		$clientDataJSON = base64_decode($post->clientDataJSON);
 		$attestationObject = base64_decode($post->attestationObject);
 		$challenge = $_SESSION['challenge'];
 
+		$requireUserVerification = true;
+		$requireUserPresent = true;
+		$failIfRootMismatch = false;
+
 		// processCreate returns data to be stored for future logins.
-		// in this example we store it in the php session.
+		// in this example we store it in the PHP session.
+
 		// Normaly you have to store the data in a database connected
 		// with the user name.
-		$data = $WebAuthn->processCreate($clientDataJSON, $attestationObject, $challenge, $userVerification === 'required', true, false);
+		$data = $WebAuthn->processCreate(
+			$clientDataJSON, $attestationObject, $challenge,
+			$requireUserVerification, $requireUserPresent, $failIfRootMismatch
+		);
 
-		// Add user infos
-		$data->userId = $userId;
-		$data->userName = $userName;
-		$data->userDisplayName = $userDisplayName;
+		// Add user info
+		//$data->userId = $userId;
+		//$data->userName = $userName;
+		//$data->userDisplayName = $userDisplayName;
 
-		if (!array_key_exists('registrations', $_SESSION) || !is_array($_SESSION['registrations'])) {
-			$_SESSION['registrations'] = array();
-		}
-		$_SESSION['registrations'][] = $data;
+		/*
+		// Data in $data
+		// See https://github.com/lbuchs/WebAuthn/blob/master/src/WebAuthn.php#L357
+		$data = new \stdClass();
+		$data->rpId = $this->_rpId;
+		$data->attestationFormat = $attestationObject->getAttestationFormatName();
+		$data->credentialId = $attestationObject->getAuthenticatorData()->getCredentialId();
+		$data->credentialPublicKey = $attestationObject->getAuthenticatorData()->getPublicKeyPem();
+		$data->certificateChain = $attestationObject->getCertificateChain();
+		$data->certificate = $attestationObject->getCertificatePem();
+		$data->certificateIssuer = $attestationObject->getCertificateIssuer();
+		$data->certificateSubject = $attestationObject->getCertificateSubject();
+		$data->signatureCounter = $this->_signatureCounter;
+		$data->AAGUID = $attestationObject->getAuthenticatorData()->getAAGUID();
+		$data->rootValid = $rootValid;
+		$data->userPresent = $userPresent;
+		$data->userVerified = $userVerified;
+		*/
 
-		$msg = 'registration success.';
+		/*
+		// Store this info in a .json file
+		$dataToSave = array(
+			'credentialId' => chunk_split(bin2hex($data->credentialId), 64),
+			'credentialPublicKey' => $data->credentialPublicKey,
+		);
+
+		// TODO: Change this debug file
+		//$filename = 'registration.json';
+		//file_put_contents($filename, json_encode($dataToSave));
+		*/
+		file_put_contents('registration.bin', serialize($data));
+
+		$msg = 'Registration success.';
 		if ($data->rootValid === false) {
-			$msg = 'registration ok, but certificate does not match any of the selected root ca.';
+			$msg = 'Registration OK, but certificate does not match any of the selected root CA.';
 		}
 
 		$return = new stdClass();
@@ -234,6 +213,7 @@ try {
 		// Looking up correspondending public key of the credential id
 		// you should also validate that only ids of the given user name
 		// are taken for the login.
+		/*
 		if (is_array($_SESSION['registrations'])) {
 			foreach ($_SESSION['registrations'] as $reg) {
 				if ($reg->credentialId === $id) {
@@ -242,6 +222,10 @@ try {
 				}
 			}
 		}
+		*/
+
+		$data = unserialize(file_get_contents('registration.bin'));
+		$credentialPublicKey = $data->credentialPublicKey;
 
 		if ($credentialPublicKey === null) {
 			throw new Exception('Public Key for credential ID not found!');
@@ -257,6 +241,8 @@ try {
 
 		$return = new stdClass();
 		$return->success = true;
+
+		$_SESSION['valid_session'] = true;
 
 		header('Content-Type: application/json');
 		print(json_encode($return));

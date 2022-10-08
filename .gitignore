@@ -1,4 +1,5 @@
 .config
+*.bin
 
 # Composer
 composer.phar

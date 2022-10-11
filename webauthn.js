@@ -35,15 +35,22 @@ function newRegistration() {
 	// Convert to base64
 	}).then(function(cred) {
 		return {
-			clientDataJSON: cred.response.clientDataJSON ? arrayBufferToBase64(cred.response.clientDataJSON) : null,
-			attestationObject: cred.response.attestationObject ? arrayBufferToBase64(cred.response.attestationObject) : null,
+			clientDataJSON:
+				cred.response.clientDataJSON
+				? arrayBufferToBase64(cred.response.clientDataJSON)
+				: null,
+			attestationObject:
+				cred.response.attestationObject
+				? arrayBufferToBase64(cred.response.attestationObject)
+				: null,
 		};
 
 	// Transfer to server
-	}).then(JSON.stringify).then(function(AuthenticatorAttestationResponse) {
-		//console.log(AuthenticatorAttestationResponse)
+	}).then(function(AuthenticatorAttestationResponse) {
+		AuthenticatorAttestationResponse.masterPwd = document.getElementById('password').value
+		AuthenticatorAttestationResponse = JSON.stringify(AuthenticatorAttestationResponse)
 
-		return window.fetch('webauthn.php?fn=processCreate', {method:'POST', body: AuthenticatorAttestationResponse, cache:'no-cache'});
+		return window.fetch('webauthn.php?fn=processCreate', {method:'POST', body: AuthenticatorAttestationResponse, cache:'no-cache'})
 
 	// Convert to JSON
 	}).then(function(response) {

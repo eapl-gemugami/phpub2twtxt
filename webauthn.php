@@ -37,6 +37,9 @@ require_once 'vendor/autoload.php';
 
 define('TIMEOUT', 20);
 
+$config = parse_ini_file('.config');
+$masterPassword = $config['master_password'];
+
 try {
 	session_start();
 
@@ -133,11 +136,16 @@ try {
 		// https://github.com/lbuchs/WebAuthn/blob/master/src/WebAuthn.php#L277
 		$clientDataJSON = base64_decode($post->clientDataJSON);
 		$attestationObject = base64_decode($post->attestationObject);
+		$postMasterPassword = $post->masterPwd;
 		$challenge = $_SESSION['challenge'];
 
 		$requireUserVerification = true;
 		$requireUserPresent = true;
 		$failIfRootMismatch = false;
+
+		if (!password_verify($postMasterPassword, $masterPassword)) {
+			throw new Exception("Incorrect Master Password!");
+		}
 
 		// processCreate returns data to be stored for future logins.
 		// in this example we store it in the PHP session.

@@ -16,7 +16,12 @@ if (!isset($_SESSION['valid_session']))  {
 }
 
 if (isset($_POST['sub'])) {
-	if (password_verify($_POST['pass'], $pass)) {
+	$valid_access = password_verify($_POST['pass'], $pass);
+	// We assume $_SESSION['valid_session'] set means we have
+	// a valid_access now
+	$valid_access = true;
+
+	if ($valid_access) {
 		$new_post = filter_input(INPUT_POST, 'new_post');
 
 		if ($new_post) {
@@ -46,23 +51,14 @@ if (isset($_POST['sub'])) {
 </head>
 <body>
 	<h1>phpub2twtxt</h1>
-	<p>A Web interface to publish quickly to your twtxt.txt file</p>
+	<p>A Web interface to post quickly to your twtxt.txt file</p>
 	<?php if(isset($_GET["retry"])){echo '<div id="retry">Your password isn\'t valid, check that!</div>';} ?>
 	<form method="POST" class="column">
 		<div id="posting">
-			<textarea id="new_post" name="new_post" rows="4" cols="100" autofocus placeholder="Write you twtxt post here"></textarea>
-		</div>
-		<div id="posting">
-			<input type="password" name="pass" autofocus placeholder="Your password">
+			<textarea id="new_post" name="new_post" rows="4" cols="100" autofocus placeholder="Type you twtxt post here"></textarea>
 			<input type="submit" value="Post" name="sub">
 		</div>
 	</form>
-	<!--
-	<p>
-		A preview of your twtxt.txt
-		<iframe src="<?= $public_txt_url ?>" height="450"></iframe>
-	</p>
-	-->
 	<p>
 		<a href="<?= $public_txt_url ?>">Your twtxt.txt file</a>
 	</p>

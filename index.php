@@ -17,17 +17,18 @@ if (!isset($_SESSION['valid_session']))  {
 
 if (isset($_POST['sub'])) {
 	$valid_access = password_verify($_POST['pass'], $pass);
-	// We assume $_SESSION['valid_session'] set means we have
-	// a valid_access now
+	// We assume $_SESSION['valid_session'] set means we have a valid_access now
 	$valid_access = true;
 
 	if ($valid_access) {
 		$new_post = filter_input(INPUT_POST, 'new_post');
+		$new_post = str_replace("\n","\u{2028}", $new_post);
+		$new_post = str_replace("\r","", $new_post);
 
 		if ($new_post) {
 			$contents = file_get_contents($txt_file_path);
-			$contents .= "\n" . date("Y-m-d\TH:i:s\Z") . "\t";
-			$contents .= "$new_post";
+			$contents .= date("Y-m-d\TH:i:s\Z") . "\t";
+			$contents .= "$new_post" . "\n";
 
 			// TODO: Add error handling if write to the file fails
 			// For example due to permissions problems

@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Copy the .config.sample file to .config and replace the content
 // with your settings
 
@@ -16,7 +20,7 @@ if (!isset($_SESSION['valid_session']))  {
 }
 
 if (isset($_POST['sub'])) {
-	$valid_access = password_verify($_POST['pass'], $pass);
+	//$valid_access = password_verify($_POST['pass'], $pass);
 	// We assume $_SESSION['valid_session'] set means we have a valid_access now
 	$valid_access = true;
 
@@ -26,9 +30,19 @@ if (isset($_POST['sub'])) {
 		$new_post = str_replace("\r","", $new_post);
 
 		if ($new_post) {
+			// Check if we have a point to insert the next Twt
+			define('NEW_TWT_MARKER', "#~~~#\n");
 			$contents = file_get_contents($txt_file_path);
-			$contents .= date("Y-m-d\TH:i:s\Z") . "\t";
-			$contents .= "$new_post" . "\n";
+
+			$twt = date("Y-m-d\TH:i:s\Z") . "\t$new_post\n";
+
+			if (strpos($contents, NEW_TWT_MARKER) !== false) {
+				// Add the previous marker
+				$twt = NEW_TWT_MARKER . $twt;
+				$contents = str_replace(NEW_TWT_MARKER, $twt, $contents);
+			} else {
+				$contents .= $twt;
+			}
 
 			// TODO: Add error handling if write to the file fails
 			// For example due to permissions problems

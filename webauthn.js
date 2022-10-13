@@ -29,7 +29,7 @@ function newRegistration() {
 
 	// Create credentials
 	}).then(function(createCredentialArgs) {
-		console.log(createCredentialArgs);
+		//console.log(createCredentialArgs);
 		return navigator.credentials.create(createCredentialArgs);
 
 	// Convert to base64
@@ -85,7 +85,8 @@ function checkRegistration() {
 	}
 
 	// Get default args
-	window.fetch('webauthn.php?fn=getGetArgs', {method:'GET',cache:'no-cache'}).then(function(response) {
+	window.fetch('webauthn.php?fn=getGetArgs', { method: 'GET', cache: 'no-cache' }).then(function (response) {
+		//console.log(response.body)
 		return response.json();
 
 	// Convert Base64 to ArrayBuffer
@@ -93,13 +94,14 @@ function checkRegistration() {
 
 		// Error handling
 		if (json.success === false) {
-			throw new Error(json.msg);
+			throw new Error(json.msg)
 		}
 
 		// Replace binary base64 data with ArrayBuffer. a other way to do this
 		// is the reviver function of JSON.parse()
-		recursiveBase64StrToArrayBuffer(json);
-		return json;
+		recursiveBase64StrToArrayBuffer(json)
+		console.log(json)
+		return json
 
 	// Create credentials
 	}).then(function(getCredentialArgs) {
@@ -116,8 +118,8 @@ function checkRegistration() {
 			userHandle: cred.response.userHandle ? arrayBufferToBase64(cred.response.userHandle) : null
 		};
 
-		// transfer to server
-	}).then(JSON.stringify).then(function(AuthenticatorAttestationResponse) {
+	// Transfer to server
+	}).then(JSON.stringify).then(function (AuthenticatorAttestationResponse) {
 		return window.fetch('webauthn.php?fn=processGet', {method:'POST', body: AuthenticatorAttestationResponse, cache:'no-cache'});
 
 	// Convert to json

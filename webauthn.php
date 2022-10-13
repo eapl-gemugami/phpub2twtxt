@@ -36,6 +36,7 @@
 require_once 'vendor/autoload.php';
 
 define('TIMEOUT', 20);
+define('REGISTRATIONS_PATH', 'registrations.bin');
 
 $config = parse_ini_file('.config');
 $masterPassword = $config['master_password'];
@@ -111,10 +112,15 @@ try {
 	// Request for get arguments
 	// ------------------------------------
 	} else if ($fn === 'getGetArgs') {
-		$ids = array();
+		$registrations = array();
+		if (file_exists(REGISTRATIONS_PATH)) {
+			$registrations = unserialize(file_get_contents(REGISTRATIONS_PATH));
+		}
 
-		$data = unserialize(file_get_contents('registration.bin'));
-		$ids[] = $data->credentialId;
+		$ids = array();
+		foreach ($registrations as $key => $value) {
+			$ids[] = $value->credentialId;
+		}
 
 		$userVerification = true;
 
@@ -125,7 +131,7 @@ try {
 		header('Content-Type: application/json');
 		print(json_encode($getArgs));
 
-		// Save challange to session. you have to deliver it to processGet later.
+		// Save challange to session. You have to deliver it to processGet later.
 		$_SESSION['challenge'] = $WebAuthn->getChallenge();
 
 	// ------------------------------------
@@ -181,18 +187,19 @@ try {
 		$data->userVerified = $userVerified;
 		*/
 
-		/*
-		// Store this info in a .json file
-		$dataToSave = array(
-			'credentialId' => chunk_split(bin2hex($data->credentialId), 64),
-			'credentialPublicKey' => $data->credentialPublicKey,
-		);
+		// Load previous registrations if they exist
+		$registrations = array();
 
-		// TODO: Change this debug file
-		//$filename = 'registration.json';
-		//file_put_contents($filename, json_encode($dataToSave));
-		*/
-		file_put_contents('registration.bin', serialize($data));
+		if (file_exists(REGISTRATIONS_PATH)) {
+			$registrations = unserialize(file_get_contents(REGISTRATIONS_PATH));
+		}
+
+		// chunk_split(string $body, int $chunklen = 76, string $end = "\r\n"): string
+		$credentialId = chunk_split(bin2hex($data->credentialId), 64, '');
+		$registrations[$credentialId] = $data;
+
+		// We are saving the registrations in a binary file
+		file_put_contents(REGISTRATIONS_PATH, serialize($registrations));
 
 		$msg = 'Registration success.';
 		if ($data->rootValid === false) {
@@ -216,30 +223,30 @@ try {
 		$userHandle = base64_decode($post->userHandle);
 		$id = base64_decode($post->id);
 		$challenge = $_SESSION['challenge'];
+
+		// Looking up correspondending Public key of the Credential ID
+		// you should also validate that only IDs of the given User name
+		// are taken for the login.
+
+		$registrations = array();
+		if (file_exists(REGISTRATIONS_PATH)) {
+			$registrations = unserialize(file_get_contents(REGISTRATIONS_PATH));
+		}
+
 		$credentialPublicKey = null;
 
-		// Looking up correspondending public key of the credential id
-		// you should also validate that only ids of the given user name
-		// are taken for the login.
-		/*
-		if (is_array($_SESSION['registrations'])) {
-			foreach ($_SESSION['registrations'] as $reg) {
-				if ($reg->credentialId === $id) {
-					$credentialPublicKey = $reg->credentialPublicKey;
-					break;
-				}
+		foreach ($registrations as $registration) {
+			if ($registration->credentialId === $id) {
+				$credentialPublicKey = $registration->credentialPublicKey;
 			}
 		}
-		*/
-
-		$data = unserialize(file_get_contents('registration.bin'));
-		$credentialPublicKey = $data->credentialPublicKey;
 
 		if ($credentialPublicKey === null) {
 			throw new Exception('Public Key for credential ID not found!');
 		}
 
-		// If we have resident key, we have to verify that the userHandle is the provided userId at registration
+		// If we have resident key, we have to verify that the userHandle
+		// is the provided userId at registration
 		if ($requireResidentKey && $userHandle !== hex2bin($reg->userId)) {
 			throw new \Exception('userId doesnt match (is ' . bin2hex($userHandle) . ' but expect ' . $reg->userId . ')');
 		}

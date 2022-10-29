@@ -1,7 +1,11 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+define('DEBUG_MODE', true);
+
+if (DEBUG_MODE) {
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
 
 // Copy the .config.sample file to .config and replace the content
 // with your settings
@@ -13,6 +17,8 @@ $txt_file_path = $config['txt_file_path']; // File route
 $public_txt_url = $config['public_txt_url'];
 $pass = $config['master_password'];
 
+$timezone = $config['timezone'];
+
 session_start();
 
 if (!isset($_SESSION['valid_session']))  {
@@ -20,7 +26,6 @@ if (!isset($_SESSION['valid_session']))  {
 }
 
 if (isset($_POST['sub'])) {
-	//$valid_access = password_verify($_POST['pass'], $pass);
 	// We assume $_SESSION['valid_session'] set means we have a valid_access now
 	$valid_access = true;
 
@@ -34,7 +39,11 @@ if (isset($_POST['sub'])) {
 			define('NEW_TWT_MARKER', "#~~~#\n");
 			$contents = file_get_contents($txt_file_path);
 
-			$twt = date("Y-m-d\TH:i:s\Z") . "\t$new_post\n";
+			if (!date_default_timezone_set($timezone)) {
+				date_default_timezone_set('UTC');
+			}
+
+			$twt = date('c') . "\t$new_post\n";
 
 			if (strpos($contents, NEW_TWT_MARKER) !== false) {
 				// Add the previous marker
@@ -54,18 +63,18 @@ if (isset($_POST['sub'])) {
 			echo "Oops something went wrong...\n\nCheck the error_log on the server";
 			exit;
 		}
-	} else{ header("location: ?retry"); }
+	} else { header("location: ?retry"); }
 } else { ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>phpub2twtxt</title>
+	<title>twtxt</title>
 	<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<h1>phpub2twtxt</h1>
+	<h1>twtxt</h1>
 	<p>A Web interface to post quickly to your twtxt.txt file</p>
 	<?php if(isset($_GET["retry"])){echo '<div id="retry">Your password isn\'t valid, check that!</div>';} ?>
 	<form method="POST" class="column">

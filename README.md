@@ -3,6 +3,8 @@ An PHP web interface to publish your microblogging in twtxt format [twtxt.txt](h
 
 [Insert a screenshot here]
 
+Requires PHP 8.1 or above.
+
 ## Setup and use
 
 1. Upload the files to you Web Server, or clone this project from Git.

@@ -1,0 +1,35 @@
+{
+	"short_name": "twtxt",
+	"name": "twtxt",
+	"description": "twtxt web interface to upload status",
+	"display": "standalone",
+	"theme_color": "#132e4d",
+	"background_color": "#132e4d",
+	"start_url": "index.html",
+	"icons": [
+		{
+			"src": "img/icon-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "img/icon-512x512-maskable.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "img/icon-196x196.png",
+			"sizes": "196x196",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "img/icon-196x196-maskable.png",
+			"sizes": "196x196",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	]
+}

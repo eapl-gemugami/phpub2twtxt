@@ -42,3 +42,9 @@ Code based on [register-with-txt by Gabriel de Jesus](https://github.com/gabriel
 Done with bits of PHP to make it write just one line of twtxt compliant data at a time.
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
+
+# Dev
+curl
+openssl
+pdo_sqlite
+sodium

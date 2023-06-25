@@ -1,34 +1,9 @@
 <?php
-function time_elapsed_string($timestamp, $full = false) {
-	$now = new DateTime;
-	$ago = new DateTime;
-	$ago->setTimestamp($timestamp);
+declare(strict_types=1);
+date_default_timezone_set('UTC');
 
-	$diff = $now->diff($ago);
-
-	$diff->w = floor($diff->d / 7);
-	$diff->d -= $diff->w * 7;
-
-	$string = array(
-		'y' => 'year',
-		'm' => 'month',
-		'w' => 'week',
-		'd' => 'day',
-		'h' => 'hour',
-		'i' => 'minute',
-		's' => 'second',
-	);
-	foreach ($string as $k => &$v) {
-		if ($diff->$k) {
-			$v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
-		} else {
-			unset($string[$k]);
-		}
-	}
-
-	if (!$full) $string = array_slice($string, 0, 1);
-	return $string ? implode(', ', $string) . ' ago' : 'just now';
-}
+require_once('functions.php');
+require_once('hash.php');
 
 if (!empty($_GET['url'])) {
 	$url = $_GET['url'];
@@ -42,15 +17,58 @@ if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 
 $fileContent = file_get_contents($url);
 $fileContent = mb_convert_encoding($fileContent, 'UTF-8');
+
 // \u2028 is \xE2 \x80 \xA8 in UTF-8
 // Check here: https://www.mclean.net.nz/ucf/
 $fileLines = explode("\n", $fileContent);
 
 $twts = [];
 
+$twtMainUrl = $url; // The first one
+$twtUrls = [];
+$twtNick = '';
+$twtAvatar = '';
+$twtLinks = [];
+$twtLang = '';
+$twtDescription = '';
+$twtFollowingList = [];
+
 foreach ($fileLines as $currentLine) {
 	// Remove empty lines and comments
-	if (!str_starts_with($currentLine, '#') && !empty($currentLine)) {
+	if (empty($currentLine)) {
+		continue;
+	}
+
+	if (str_starts_with($currentLine, '#')) {
+		if (!is_null(getValue('url', $currentLine))) {
+			$currentURL = getValue('url', $currentLine);
+
+			if (empty($twtMainUrl)) {
+				$twtMainUrl = $currentURL;
+			}
+			$twtUrls[] = $currentURL;
+		}
+		if (!is_null(getValue('nick', $currentLine))) {
+			$twtNick = getValue('nick', $currentLine);
+		}
+		if (!is_null(getValue('avatar', $currentLine))) {
+			$twtAvatar = getValue('avatar', $currentLine);
+		}
+		if (!is_null(getValue('lang', $currentLine))) {
+			$twtLang = getValue('lang', $currentLine);
+		}
+		if (!is_null(getValue('description', $currentLine))) {
+			$twtDescription = getValue('description', $currentLine);
+		}
+		if (!is_null(getValue('follow', $currentLine))) {
+			$twtFollowingList[] = getValue('follow', $currentLine);
+
+			// Fix that the follow has a nick\nurl structure
+			# follow = @birdsite.slashdev.space https://birdsite.slashdev.space/users/mirkosertic
+		}
+	}
+
+	if (!str_starts_with($currentLine, '#')) {
 		$explodedLine = explode("\t", $currentLine);
 		if (count($explodedLine) >= 2) {
 			$dateStr = $explodedLine[0];
@@ -62,29 +80,34 @@ foreach ($fileLines as $currentLine) {
 				//echo "The string ($dateStr) is incorrect";
 				continue;
 			} else {
-				$displayDate = time_elapsed_string($timestamp);
+				$displayDate = getTimeElapsedString($timestamp);
 			}
 
 			$twts[$timestamp] = [
+				'originalTwtStr' => $currentLine,
 				'fullDate' => date('j F Y h:i', $timestamp),
 				'displayDate' => $displayDate,
-				'content' => $twtContent,
+				'content' => htmlentities($twtContent),
 			];
+
+			// TODO: Interpret the content as markdown
 		}
 	}
 }
 
+/*
+echo "Main URL: $twtMainUrl";
+//echo "URLS: $twtUrls";
+echo "Nick: $twtNick";
+echo "Avatar URL: $twtAvatar";
+//echo "Links: $twtLinks";
+echo "Lang Code: $twtLang";
+echo "Description $twtDescription";
+*/
+
 krsort($twts, SORT_NUMERIC);
 
-// Get followers
-
-// twtxt Multiline extension
-// https://dev.twtxt.net/doc/multilineextension.html
-
-// twtxt Hash extension
-// https://dev.twtxt.net/doc/twthashextension.html
-
-//echo sodium_crypto_generichash('Message');
+// Get followers and print a list!
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,19 +118,24 @@ krsort($twts, SORT_NUMERIC);
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<h1>twtxt <?php echo $url ?></h1>
-	<p></p>
+	<h1>twtxt</h1>
+	<h2><?= $url ?></h2>
+<!--
+	<h3>Following</h3>
+<?php foreach ($twtFollowingList as $currentFollower) { ?>
+	<p>
+		<a href="read.php?url=<?= $currentFollower ?>"><?= $currentFollower ?></a>
+	</p>
+<?php } ?>
+-->
 <?php foreach ($twts as $twt) { ?>
 	<p>
-		<?php echo $twt['content'] ?><br>
-		<span title="<?php echo $twt['fullDate'] ?>"><?php echo $twt['displayDate'] ?></span>
+	<br>
+		<img src='<?= $twtAvatar ?>' class="rounded"> <strong><?= $twtNick ?></strong>
+		<a href='#<?= getHashFromTwt($twt['originalTwtStr'], $twtMainUrl) ?>'><span title="<?= $twt['fullDate'] ?>"><?php echo $twt['displayDate'] ?></span></a><br>
+		<?= $twt['content'] ?>
 	</p>
-<?php }  ?>
-
-	<form method="POST" class="column">
-		<div id="login">
-		</div>
-	</form>
-	<footer><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>
+<?php } ?>
+	<footer><hr><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>
 </body>
 </html>

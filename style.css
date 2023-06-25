@@ -1,3 +1,4 @@
+/*
 body{
 	margin:1em;
 	background-color:#333;
@@ -56,3 +57,75 @@ iframe{
 	width:100%;
 }
 footer{font-size:0.9em;text-align:right;}
+*/
+body {
+	background-color: black;
+	color: #eee;
+
+	font-family: monospace;
+
+	max-width: 100ch;
+  padding: 3em 1em;
+  margin: auto;
+  line-height: 1.75;
+  font-size: 1.25em;
+}
+
+a {
+	color: #fff;
+}
+
+a:visited {
+	color: #bbb;
+}
+
+.post-header > nav {
+	display: inline-block;
+}
+
+.post-content {
+	margin: 1em 0;
+	white-space: pre-line;
+}
+
+.form-control {
+	display: block;
+	width: 400px;
+}
+
+pre {
+	margin: 0;
+}
+
+textarea {
+	height: 150px;
+}
+
+.post-header {
+	font-weight: bold;
+}
+
+.threads thead {
+	font-weight: bold;
+}
+
+.threads td {
+	white-space: nowrap;
+	vertical-align: top;
+	padding: 0 0.4em;
+}
+
+.threads .replies {
+	text-align: right;
+}
+
+.threads .title {
+	white-space: normal;
+}
+
+img.rounded {
+  object-fit: cover;
+  border-radius: 50%;
+  height: 32px;
+  width: 32px;
+}

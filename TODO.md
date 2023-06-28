@@ -1,18 +1,22 @@
 # TO DO
 ## Must Have
 - [ ] Write to your .txt file
+- [ ] Get the timeline of all your suscriptions
 - [ ] Sort all the 'timeline' by date
+- [ ] Get all the twits belonging to a thread, and make the tree
 - [ ] Generate threads with replies
 - [ ] Cache the last twt from your followers
 - [ ] Sort your follower list by last twt (and show that in the list)
 - [ ] Add a button to reply to a twt
 ## Should have
+- [ ] Check that the Twtxt URLs are valid (by regex or ping)
 - [ ] Read all the twts from your followers
 - [ ] Implement discover_url = to know where to inform for followers
 - [ ] Implement discover PHP to receive suscriptions
-- [ ] Check that the urls are valid (by regex or ping)
 - [ ] Cache reads to avoid retreiving same file many times
 - [ ] Show a default avatar for .txts w/o avatar URL
+- [ ] Get Thread hashes (#m443x2q)
+- [ ] Get Menctions @<~duriny https://envs.net/~duriny/twtxt.txt>
 ## Nice to have
 - [ ] Support markdown or gemtext
 - [ ] Support images

@@ -15,7 +15,10 @@ if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 	die('Not a valid URL');
 }
 
-$fileContent = file_get_contents($url);
+# TODO: Process the Warning
+# Warning: file_get_contents(https://eapl.mx/twtxt.net): failed to open stream: HTTP request failed! HTTP/1.1 404 Not Found in
+
+$fileContent = getCachedFileContents($url, 300);
 $fileContent = mb_convert_encoding($fileContent, 'UTF-8');
 
 // \u2028 is \xE2 \x80 \xA8 in UTF-8
@@ -76,6 +79,15 @@ foreach ($fileLines as $currentLine) {
 
 			$twtContent = str_replace("\xE2\x80\xA8", "\n<br>", $twtContent);
 
+			// Get and remote the hash
+			$hash = getReplyHashFromTwt($twtContent);
+			if ($hash) {
+				$twtContent = str_replace("(#$hash)", '', $twtContent);
+			}
+
+			// Get mentions
+			$mentions = getMentionsFromTwt($twtContent);
+
 			if (($timestamp = strtotime($dateStr)) === false) {
 				//echo "The string ($dateStr) is incorrect";
 				continue;
@@ -85,9 +97,12 @@ foreach ($fileLines as $currentLine) {
 
 			$twts[$timestamp] = [
 				'originalTwtStr' => $currentLine,
+				'hash' => getHashFromTwt($currentLine, $twtMainUrl),
 				'fullDate' => date('j F Y h:i', $timestamp),
 				'displayDate' => $displayDate,
 				'content' => htmlentities($twtContent),
+				'replyToHash' => $hash,
+				'mentions' => $mentions,
 			];
 
 			// TODO: Interpret the content as markdown
@@ -132,8 +147,15 @@ krsort($twts, SORT_NUMERIC);
 	<p>
 	<br>
 		<img src='<?= $twtAvatar ?>' class="rounded"> <strong><?= $twtNick ?></strong>
-		<a href='#<?= getHashFromTwt($twt['originalTwtStr'], $twtMainUrl) ?>'><span title="<?= $twt['fullDate'] ?>"><?php echo $twt['displayDate'] ?></span></a><br>
+		<a href='#<?= $twt['hash'] ?>'><span title="<?= $twt['fullDate'] ?>"><?= $twt['displayDate'] ?></span></a>
+		<?php if($twt['replyToHash']) { ?>
+			Reply to <?= $twt['replyToHash']?>
+		<?php } ?>
+		<br>
 		<?= $twt['content'] ?>
+		<?php foreach ($twt['mentions'] as $mention) { ?>
+			<br><?= $mention['nick'] ?>(<?= $mention['url'] ?>)
+		<?php } ?>
 	</p>
 <?php } ?>
 	<footer><hr><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>

@@ -3,7 +3,8 @@ An PHP web interface to publish your microblogging in twtxt format [twtxt.txt](h
 
 [Insert a screenshot here]
 
-Requires PHP 8.1 or above.
+~~Requires PHP 8.1 or above.~~
+Tested with PHP 7.2.32 (For compatibility)
 
 ## Setup and use
 
@@ -39,7 +40,7 @@ Requires PHP 8.1 or above.
 # Meta
 Code based on [register-with-txt by Gabriel de Jesus](https://github.com/gabrieldejesus/register-with-txt) and [pbpush by Luqaska](https://github.com/Luqaska/pbpush)
 
-Done with bits of PHP to make it write just one line of twtxt compliant data at a time.
+Done with bits of PHP to make it write just one line of twtxt-compliant data at a time.
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 

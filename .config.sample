@@ -15,6 +15,8 @@ public_txt_url = "https://eapl.mx/twtxt.txt"
 ; echo password_hash("123", PASSWORD_DEFAULT);
 master_password = ""
 
+totp_secret = "K3OBZ7XPR6T4PTNXSNCQ"
+
 ; Check available timezones here:
 ; https://www.php.net/manual/en/timezones.php
 timezone = "UTC"

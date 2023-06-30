@@ -18,7 +18,8 @@ function getHashFromTwt(string $twt, string $url): string {
 		$dt = new DateTime($dateStr);
 
 		// Getting the new formatted datetime
-		$dateStr = $dt->format(DateTime::ATOM); // Updated ISO8601
+		//$dateStr = $dt->format(DateTime::ATOM); // Updated ISO8601
+		$dateStr = $dt->format(DateTime::RFC3339);
 		$dateStr = str_replace('+00:00', 'Z', $dateStr);
 		$dateStr = str_replace('-00:00', 'Z', $dateStr);
 

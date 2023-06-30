@@ -5,10 +5,11 @@ date_default_timezone_set('UTC');
 require_once('functions.php');
 require_once('hash.php');
 
+$config = parse_ini_file('.config');
+$url = $config['public_txt_url'];
+
 if (!empty($_GET['url'])) {
 	$url = $_GET['url'];
-} else {
-	die('Not a valid URL');
 }
 
 if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
@@ -16,13 +17,18 @@ if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 }
 
 # TODO: Process the Warning
-# Warning: file_get_contents(https://eapl.mx/twtxt.net): failed to open stream: HTTP request failed! HTTP/1.1 404 Not Found in
+# Warning: file_get_contents(https://eapl.mx/twtxt.net):
+# failed to open stream: HTTP request failed! HTTP/1.1 404 Not Found in
 
-$fileContent = getCachedFileContents($url, 300);
+const DEBUG_TIME_SECS = 300;
+const PRODUCTION_TIME_SECS = 15;
+$fileContent = getCachedFileContents($url, DEBUG_TIME_SECS);
+if (is_null($fileContent)) {
+	echo "File doesn't exist";
+	die();
+}
 $fileContent = mb_convert_encoding($fileContent, 'UTF-8');
 
-// \u2028 is \xE2 \x80 \xA8 in UTF-8
-// Check here: https://www.mclean.net.nz/ucf/
 $fileLines = explode("\n", $fileContent);
 
 $twts = [];
@@ -43,28 +49,28 @@ foreach ($fileLines as $currentLine) {
 	}
 
 	if (str_starts_with($currentLine, '#')) {
-		if (!is_null(getValue('url', $currentLine))) {
-			$currentURL = getValue('url', $currentLine);
+		if (!is_null(getSingleParameter('url', $currentLine))) {
+			$currentURL = getSingleParameter('url', $currentLine);
 
 			if (empty($twtMainUrl)) {
 				$twtMainUrl = $currentURL;
 			}
 			$twtUrls[] = $currentURL;
 		}
-		if (!is_null(getValue('nick', $currentLine))) {
-			$twtNick = getValue('nick', $currentLine);
+		if (!is_null(getSingleParameter('nick', $currentLine))) {
+			$twtNick = getSingleParameter('nick', $currentLine);
 		}
-		if (!is_null(getValue('avatar', $currentLine))) {
-			$twtAvatar = getValue('avatar', $currentLine);
+		if (!is_null(getSingleParameter('avatar', $currentLine))) {
+			$twtAvatar = getSingleParameter('avatar', $currentLine);
 		}
-		if (!is_null(getValue('lang', $currentLine))) {
-			$twtLang = getValue('lang', $currentLine);
+		if (!is_null(getSingleParameter('lang', $currentLine))) {
+			$twtLang = getSingleParameter('lang', $currentLine);
 		}
-		if (!is_null(getValue('description', $currentLine))) {
-			$twtDescription = getValue('description', $currentLine);
+		if (!is_null(getSingleParameter('description', $currentLine))) {
+			$twtDescription = getSingleParameter('description', $currentLine);
 		}
-		if (!is_null(getValue('follow', $currentLine))) {
-			$twtFollowingList[] = getValue('follow', $currentLine);
+		if (!is_null(getSingleParameter('follow', $currentLine))) {
+			$twtFollowingList[] = getSingleParameter('follow', $currentLine);
 
 			// Fix that the follow has a nick\nurl structure
 			# follow = @birdsite.slashdev.space https://birdsite.slashdev.space/users/mirkosertic
@@ -77,6 +83,12 @@ foreach ($fileLines as $currentLine) {
 			$dateStr = $explodedLine[0];
 			$twtContent = $explodedLine[1];
 
+			// Convert HTML problematic characters
+			$twtContent = htmlentities($twtContent);
+
+			// Replace the Line separator character (U+2028)
+			// \u2028 is \xE2 \x80 \xA8 in UTF-8
+			// Check here: https://www.mclean.net.nz/ucf/
 			$twtContent = str_replace("\xE2\x80\xA8", "\n<br>", $twtContent);
 
 			// Get and remote the hash
@@ -100,7 +112,7 @@ foreach ($fileLines as $currentLine) {
 				'hash' => getHashFromTwt($currentLine, $twtMainUrl),
 				'fullDate' => date('j F Y h:i', $timestamp),
 				'displayDate' => $displayDate,
-				'content' => htmlentities($twtContent),
+				'content' => $twtContent,
 				'replyToHash' => $hash,
 				'mentions' => $mentions,
 			];
@@ -134,7 +146,7 @@ krsort($twts, SORT_NUMERIC);
 </head>
 <body>
 	<h1>twtxt</h1>
-	<h2><?= $url ?></h2>
+	<h2>twts for <a href="<?= $url ?>"><?= $twtNick ?></a></h2>
 <!--
 	<h3>Following</h3>
 <?php foreach ($twtFollowingList as $currentFollower) { ?>
@@ -145,18 +157,19 @@ krsort($twts, SORT_NUMERIC);
 -->
 <?php foreach ($twts as $twt) { ?>
 	<p>
-	<br>
+		<?php if($twt['replyToHash']) { ?>
+			<em>Reply to <a href="#"><?= $twt['replyToHash']?></a></em><br>
+		<?php } ?>
 		<img src='<?= $twtAvatar ?>' class="rounded"> <strong><?= $twtNick ?></strong>
 		<a href='#<?= $twt['hash'] ?>'><span title="<?= $twt['fullDate'] ?>"><?= $twt['displayDate'] ?></span></a>
-		<?php if($twt['replyToHash']) { ?>
-			Reply to <?= $twt['replyToHash']?>
-		<?php } ?>
+
 		<br>
 		<?= $twt['content'] ?>
 		<?php foreach ($twt['mentions'] as $mention) { ?>
 			<br><?= $mention['nick'] ?>(<?= $mention['url'] ?>)
 		<?php } ?>
 	</p>
+	<br>
 <?php } ?>
 	<footer><hr><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>
 </body>

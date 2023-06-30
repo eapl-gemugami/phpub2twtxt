@@ -1,4 +1,45 @@
 <?php
+class TwtxtFile {
+	public $mainURL = ''; // First found URL
+	public $URLs = [];
+	public $nick = '';
+	public $avatar = '';
+	public $emoji = '';
+	public $description = '';
+	public $lang = 'en'; // Default language
+	public $links = [];
+	public $following = [];
+	public $twts = [];
+}
+
+class Twt {
+	public $originalTwtStr;
+	public $hash;
+	public $fullDate;
+	public $displayDate;
+	public $content;
+	public $replyToHash;
+	public $mentions;
+	public $avatar;
+	public $emoji;
+	public $nick;
+}
+
+# https://stackoverflow.com/a/39360281/13173382
+# Confirm that this temorary fix is not skipping something
+/*
+stream_context_set_default([
+	'ssl'                => [
+		'peer_name'          => 'generic-server',
+		'verify_peer'        => FALSE,
+		'verify_peer_name'   => FALSE,
+		'allow_self_signed'  => TRUE
+		]
+	]
+);
+curl_setopt($curl, CURLOPT_SSLVERSION, 4);
+*/
+
 /**
  * The function searches for a key-value pair in a string and returns the value if found.
  *
@@ -9,7 +50,7 @@
  * found, the function returns the value of the key as a string after trimming any whitespace. If no
  * match is found, the function returns null.
  */
-function getValue($keyToFind, $string) {
+function getSingleParameter($keyToFind, $string) {
 	if (!str_contains($string, $keyToFind)) {
 		return null;
 	}
@@ -20,9 +61,22 @@ function getValue($keyToFind, $string) {
 
 	if (isset($matches[1])) {
 		return trim($matches[1]);
-	} else {
-		return null;
 	}
+
+	return null;
+}
+
+function getDoubleParameter($keywordToFind, $string) {
+	$pattern = '/#\s*' . preg_quote($keywordToFind, '/') . '\s*=\s*(\S+)\s*(\S+)/';
+	// Matches "# <keyword> = <value> <value>"
+	preg_match($pattern, $string, $matches);
+
+	if (isset($matches[1]) && isset($matches[2])) {
+		$result = array($matches[1], $matches[2]);
+		return $result;
+	}
+
+	return null;
 }
 
 function getReplyHashFromTwt($twtString) {
@@ -94,12 +148,16 @@ function getTimeElapsedString($timestamp, $full = false) {
 	return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 
-function getCachedFileContents($filePath, $cacheDuration = 15) {
-	$cacheFile = __DIR__ . '/cache/' . md5($filePath);
+function getCachedFileContentsOrUpdate($filePath, $cacheDurationSecs = 15) {
+	# TODO: Process the Warning
+	# Warning: file_get_contents(https://eapl.mx/twtxt.net):
+	# failed to open stream: HTTP request failed! HTTP/1.1 404 Not Found in
+
+	$cacheFile = getCachedFileName($filePath);
 
 	// Check if cache file exists and it's not expired
-	if (file_exists($cacheFile) && time() - filemtime($cacheFile) < $cacheDuration) {
-			return file_get_contents($cacheFile);
+	if (file_exists($cacheFile) && time() - filemtime($cacheFile) < $cacheDurationSecs) {
+		return file_get_contents($cacheFile);
 	}
 
 	// File doesn't exist in cache or has expired, so fetch and cache it
@@ -107,6 +165,135 @@ function getCachedFileContents($filePath, $cacheDuration = 15) {
 	file_put_contents($cacheFile, $contents);
 
 	return $contents;
+}
+
+function getCachedFileContents($filePath) {
+	$cacheFile = getCachedFileName($filePath);
+
+	// Check if cache file exists and it's not expired
+	if (file_exists($cacheFile)) {
+		return file_get_contents($cacheFile);
+	}
+
+	return null;
+}
+
+function updateCachedFile($filePath, $cacheDurationSecs = 15) {
+	$cacheFile = getCachedFileName($filePath);
+
+	// File doesn't exist in cache or has expired, so fetch and cache it
+	if (!file_exists($cacheFile) || (time() - filemtime($cacheFile) < $cacheDurationSecs)) {
+		$contents = file_get_contents($filePath);
+		file_put_contents($cacheFile, $contents);
+	}
+}
+
+function getTwtsFromTwtxtString($url) {
+	$fileContent = getCachedFileContents($url);
+	if (is_null($fileContent)) {
+		return null;
+	}
+	$fileContent = mb_convert_encoding($fileContent, 'UTF-8');
+
+	$fileLines = explode("\n", $fileContent);
+
+	$twtxtData = new TwtxtFile();
+
+	foreach ($fileLines as $currentLine) {
+		// Remove empty lines
+		if (empty($currentLine)) {
+			continue;
+		}
+
+		if (str_starts_with($currentLine, '#')) {
+			// Check if comments (starting with #) have some metadata
+			if (!is_null(getSingleParameter('url', $currentLine))) {
+				$currentURL = getSingleParameter('url', $currentLine);
+
+				if (empty($twtxtData->URLs)) {
+					$twtxtData->mainURL = $currentURL;
+				}
+				$twtxtData->URLs[] = $currentURL;
+			}
+			if (!is_null(getSingleParameter('nick', $currentLine))) {
+				$twtxtData->nick = getSingleParameter('nick', $currentLine);
+			}
+			if (!is_null(getSingleParameter('avatar', $currentLine))) {
+				$twtxtData->avatar = getSingleParameter('avatar', $currentLine);
+			}
+			if (!is_null(getSingleParameter('emoji', $currentLine))) {
+				$twtxtData->emoji = getSingleParameter('emoji', $currentLine);
+			}
+			if (!is_null(getSingleParameter('lang', $currentLine))) {
+				$twtxtData->lang = getSingleParameter('lang', $currentLine);
+			}
+			if (!is_null(getSingleParameter('description', $currentLine))) {
+				$twtxtData->description = getSingleParameter('description', $currentLine);
+			}
+			if (!is_null(getSingleParameter('follow', $currentLine))) {
+				$twtxtData->following[] = getSingleParameter('follow', $currentLine);
+			}
+		}
+
+		if (!str_starts_with($currentLine, '#')) {
+			$explodedLine = explode("\t", $currentLine);
+			if (count($explodedLine) >= 2) {
+				$dateStr = $explodedLine[0];
+				$twtContent = $explodedLine[1];
+
+				// Convert HTML problematic characters
+				$twtContent = htmlentities($twtContent);
+
+				// Replace the Line separator character (U+2028)
+				// \u2028 is \xE2 \x80 \xA8 in UTF-8
+				// Check here: https://www.mclean.net.nz/ucf/
+				$twtContent = str_replace("\xE2\x80\xA8", "\n<br>", $twtContent);
+
+				// Get and remote the hash
+				$hash = getReplyHashFromTwt($twtContent);
+				if ($hash) {
+					$twtContent = str_replace("(#$hash)", '', $twtContent);
+				}
+
+				// Get mentions
+				$mentions = getMentionsFromTwt($twtContent);
+
+				// Get Lang metadata
+
+				if (($timestamp = strtotime($dateStr)) === false) {
+					//echo "The string ($dateStr) is incorrect";
+					// Incorrect date string, skip this twt
+					continue;
+				} else {
+					$displayDate = getTimeElapsedString($timestamp);
+				}
+
+				// TODO: Only 1 twt by second is allowed here
+				$twt = new Twt();
+
+				$twt->originalTwtStr = $currentLine;
+				$twt->hash = getHashFromTwt($currentLine, $twtxtData->mainURL);
+				$twt->fullDate = date('j F Y h:i', $timestamp);
+				$twt->displayDate = $displayDate;
+				$twt->content = $twtContent;
+				$twt->replyToHash = $hash;
+				$twt->mentions = $mentions;
+				$twt->avatar = $twtxtData->avatar;
+				$twt->emoji = $twtxtData->emoji;
+				$twt->nick = $twtxtData->nick;
+
+				$twtxtData->twts[$timestamp] = $twt;
+
+				// TODO: Interpret the content as markdown
+			}
+		}
+	}
+
+	return $twtxtData;
+}
+
+function getCachedFileName($filePath) {
+	return __DIR__ . '/cache/' . hash('sha256', $filePath);
 }
 
 if (!function_exists('str_starts_with')) {
@@ -124,13 +311,3 @@ if (!function_exists('str_contains')) {
 		return $needle !== '' && mb_strpos($haystack, $needle) !== false;
 	}
 }
-
-/*
-$string = '#        nick = me@eapl.mx';
-$value = getValue('nick', $string);
-echo $value; // Output: me@eapl.mx
-
-$string = '# follow = https://twtxt.net/user/tkanos/twtxt.txt';
-$value = getValue('follow', $string);
-echo $value; // Output: me@eapl.mx
-*/

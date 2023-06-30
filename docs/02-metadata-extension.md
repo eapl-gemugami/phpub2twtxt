@@ -168,10 +168,17 @@ The value of this field is seconds represented by an integer.
 
 ### `version`
 
+### `emoji`
+For text platforms (like Gemini) where using an image is discouraged,
+the author could add an emoji to represent it instead of an image.
+
+Limited to 1 emoji.
+If the author wants to use more than 1, could use the Nick to set a few more.
+
 ## Changelog
 
 * 2021-10-09: Initial version.
 * 2021-10-31: Clarify that metadata field values must not be empty.
 * 2021-12-26: Clarify that clients must not automatically change the feed URL to fetch the feed based on `url` metadata field values.
 * 2021-12-29: Add new `refresh` metadata field to hint to clients how often a feed can or should be fetched.
-* 2023-06-29: Added `lang` metadata, and version
+* 2023-06-29: Added `lang`, `version` and `emoji` metadata.

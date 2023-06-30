@@ -42,11 +42,10 @@ foreach ($fileLines as $currentLine) {
 
 $twts = [];
 
-//print_r(json_encode($twtFollowingList, JSON_PRETTY_PRINT));
-
+# Combine all the followers twts
 foreach ($parsedTwtxtFiles as $currentTwtFile) {
 	if (!is_null($currentTwtFile)) {
-		$twts = array_merge($twts, $currentTwtFile->twts);
+		$twts += $currentTwtFile->twts;
 	}
 }
 

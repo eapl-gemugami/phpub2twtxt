@@ -9,7 +9,7 @@ if (isset($_POST['totp'])) {
 	if ($isCodeValid) {
 		session_start();
 		$_SESSION['valid_session'] = true;
-		header('Location: index.php');
+		header('Location: .');
 	} else {
 		$invalidCode = true;
 	}

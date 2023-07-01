@@ -26,7 +26,7 @@ if (isset($_GET['hash'])) {
 	$textareaValue = "(#$hash) ";
 }
 
-if (isset($_POST['mit'])) {
+if (isset($_POST['submit'])) {
 	$valid_access = true;
 
 	if ($valid_access) {

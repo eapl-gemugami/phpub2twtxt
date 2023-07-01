@@ -10,6 +10,8 @@
 - [ ] Add a button to reply to a twt
 - [ ] Decide if we allow Selfsigned certificates
 ## Should have
+- [X] Login with TOTP
+- [ ] Fix Login redirection with Post-Redirect-Get
 - [ ] Check that the Twtxt URLs are valid (by regex or ping)
 - [ ] Read all the twts from your followers
 - [ ] Implement discover_url = to know where to inform for followers

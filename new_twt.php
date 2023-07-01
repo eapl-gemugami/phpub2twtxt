@@ -14,7 +14,7 @@ $pass = $config['master_password'];
 
 $timezone = $config['timezone'];
 
-session_start();
+require_once('base.php');
 
 if (!isset($_SESSION['valid_session']))  {
 	header('Location: login.php');

@@ -1,4 +1,6 @@
 <?php
+require_once('base.php');
+
 require_once('libs/TOTP.php');
 $config = parse_ini_file('.config');
 
@@ -7,9 +9,6 @@ if (isset($_POST['totp'])) {
 	$isCodeValid = verifyTOTP($config['totp_secret'], $topt);
 
 	if ($isCodeValid) {
-		session_start([
-			'cookie_lifetime' => 604800, // 7 days
-		]);
 		$_SESSION['valid_session'] = true;
 		header('Location: .');
 	} else {
@@ -34,11 +33,13 @@ if (isset($_POST['totp'])) {
 				<div>TOTP is invalid, try again!</div>
 			<?php } ?>
 			<label for="fname">TOTP:</label>
+			<br>
   		<input type="text" id="totp" name="totp"><br>
 			<input type="submit" value="Login" class="btn">
 		</div>
 	</form>
 	</form>
+	<hr>
 	<footer><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>
 </body>
 </html>

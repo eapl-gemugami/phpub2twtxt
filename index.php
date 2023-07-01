@@ -1,8 +1,9 @@
 <?php
 # Shows the timeline for a user
-declare(strict_types=1);
+
 date_default_timezone_set('UTC');
 
+require_once('base.php');
 require_once('functions.php');
 require_once('hash.php');
 
@@ -19,7 +20,7 @@ if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 
 const DEBUG_TIME_SECS = 300;
 const PRODUCTION_TIME_SECS = 15;
-$fileContent = getCachedFileContentsOrUpdate($url, DEBUG_TIME_SECS);
+$fileContent = getCachedFileContentsOrUpdate($url, PRODUCTION_TIME_SECS);
 $fileContent = mb_convert_encoding($fileContent, 'UTF-8');
 
 $fileLines = explode("\n", $fileContent);

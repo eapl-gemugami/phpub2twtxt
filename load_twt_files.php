@@ -1,7 +1,7 @@
 <?php
 # Gets the followers from an URL and then gets all the Followers twtxt.txt files
 # Intended to be run in the background
-declare(strict_types=1);
+require_once('base.php');
 require_once('functions.php');
 require_once('hash.php');
 
@@ -24,8 +24,8 @@ echo "Loading URL: $url\n<br>\n<br>";
 ob_flush();
 
 const DEBUG_TIME_SECS = 300;
-const PRODUCTION_TIME_SECS = 15;
-$fileContent = getCachedFileContentsOrUpdate($url, DEBUG_TIME_SECS);
+const PRODUCTION_TIME_SECS = 5;
+$fileContent = getCachedFileContentsOrUpdate($url, PRODUCTION_TIME_SECS);
 $fileContent = mb_convert_encoding($fileContent, 'UTF-8');
 
 $fileLines = explode("\n", $fileContent);

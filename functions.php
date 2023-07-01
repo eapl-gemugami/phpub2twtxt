@@ -23,6 +23,7 @@ class Twt {
 	public $avatar;
 	public $emoji;
 	public $nick;
+	public $mainURL;
 }
 
 # https://stackoverflow.com/a/39360281/13173382
@@ -297,6 +298,7 @@ function getTwtsFromTwtxtString($url) {
 				$twt->avatar = $twtxtData->avatar;
 				$twt->emoji = $twtxtData->emoji;
 				$twt->nick = $twtxtData->nick;
+				$twt->mainURL = $twtxtData->mainURL;
 
 				$twtxtData->twts[$timestamp] = $twt;
 

@@ -83,8 +83,11 @@ krsort($twts, SORT_NUMERIC);
 		<?php if($twt->replyToHash) { ?>
 			<em>Part of thread <a href="#"><?= $twt->replyToHash?></a></em><br>
 		<?php } ?>
-		<img src='<?= $twt->avatar ?>' class="rounded"> <strong><?= $twt->nick ?></strong>
-		<a href='#<?= $twt->hash ?>'><span title="<?= $twt->fullDate ?>"><?= $twt->displayDate ?></span></a>
+		<img src='<?= $twt->avatar ?>' class="rounded">
+		<strong><span title="<?= $twt->mainURL ?>"><?= $twt->nick ?></span></strong>
+		<a href='#<?= $twt->hash ?>'></a>
+		<br>
+		<span title="<?= $twt->fullDate ?>"><?= $twt->displayDate ?></span>
 
 		<br>
 		<?= $twt->content ?>
@@ -93,7 +96,7 @@ krsort($twts, SORT_NUMERIC);
 		<?php } ?>
 		<br>
 		<br>
-		<a href="index.php?hash=<?= $twt->hash ?>">Reply</a>
+		<a href="new_twt.php?hash=<?= $twt->hash ?>">Reply</a>
 	</p>
 	<br>
 <?php } ?>

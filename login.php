@@ -7,7 +7,9 @@ if (isset($_POST['totp'])) {
 	$isCodeValid = verifyTOTP($config['totp_secret'], $topt);
 
 	if ($isCodeValid) {
-		session_start();
+		session_start([
+			'cookie_lifetime' => 604800, // 7 days
+		]);
 		$_SESSION['valid_session'] = true;
 		header('Location: .');
 	} else {
@@ -33,7 +35,7 @@ if (isset($_POST['totp'])) {
 			<?php } ?>
 			<label for="fname">TOTP:</label>
   		<input type="text" id="totp" name="totp"><br>
-			<input type="submit" value="Login">
+			<input type="submit" value="Login" class="btn">
 		</div>
 	</form>
 	</form>

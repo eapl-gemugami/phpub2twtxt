@@ -16,10 +16,6 @@ a {
 	color: #fff;
 }
 
-a:visited {
-	color: #bbb;
-}
-
 .post-header > nav {
 	display: inline-block;
 }
@@ -43,7 +39,6 @@ textarea {
 }
 
 blockquote {
-	/*border-left: 2px solid #0071f3;*/
 	border-left: 2px solid #a4a4a4;
 	padding-left: 16px;
 	line-height: 1.6;
@@ -55,4 +50,31 @@ img.rounded {
   border-radius: 50%;
   height: 32px;
   width: 32px;
+}
+
+.textinput {
+	float: left;
+	width: 100%;
+	min-height: 75px;
+	outline: none;
+	resize: none;
+	border: 1px solid grey;
+	background-color: #000;
+	color: #eee;
+	font-family: monospace;
+  font-size: 1.25em;
+}
+
+.btn {
+  background-color: #f1f1f1;
+  color: black;
+  font-size: 16px;
+  padding: 8px 40px;
+	margin: 5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+	font-family: monospace;
+  font-size: 1.25em;
 }

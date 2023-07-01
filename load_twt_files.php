@@ -48,6 +48,5 @@ foreach ($twtFollowingList as $following) {
 }
 echo 'Finished';
 ob_flush();
-# Clear the flag that is loading
 
-//print_r(json_encode($twtFollowingList, JSON_PRETTY_PRINT));
+header('Location: .');

@@ -117,6 +117,16 @@ function replaceMentionsFromTwt($twtString) {
 	}, $string);
 }
 
+function replaceLinksFromTwt($twtString) {
+	// Regular expression pattern to match URLs
+	$pattern = '/(?<!\S)(\b(https?|ftp|gemini|spartan|gopher):\/\/\S+|\S+\.\S+\.\S+)(?!\S)/';
+
+	// Replace URLs with clickable links
+	$replacement = '<a href="$1">$1</a>';
+	$result = preg_replace($pattern, $replacement, $twtString);
+
+	return $result;
+}
 
 function getTimeElapsedString($timestamp, $full = false) {
 	$now = new DateTime;
@@ -253,6 +263,7 @@ function getTwtsFromTwtxtString($url) {
 				// For some reason I was having trouble finding this nomenclature
 				// that's why I leave the UTF-8 representation for future reference
 				$twtContent = str_replace("\u{2028}", "\n<br>", $twtContent);
+				$twtContent = replaceLinksFromTwt($twtContent);
 
 				// Get and remote the hash
 				$hash = getReplyHashFromTwt($twtContent);

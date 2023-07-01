@@ -111,7 +111,8 @@ function replaceMentionsFromTwt($twtString) {
 		'/https:\/\/[^\/]+/' => ''
 	);
 
-	$newString = preg_replace_callback(array_keys($patterns), function($matches) use ($patterns) {
+	$newString = preg_replace_callback(array_keys($patterns),
+			function($matches) use ($patterns) {
 		return $patterns[$matches[0]];
 	}, $string);
 }
@@ -247,7 +248,11 @@ function getTwtsFromTwtxtString($url) {
 				// Replace the Line separator character (U+2028)
 				// \u2028 is \xE2 \x80 \xA8 in UTF-8
 				// Check here: https://www.mclean.net.nz/ucf/
-				$twtContent = str_replace("\xE2\x80\xA8", "\n<br>", $twtContent);
+				//$twtContent = str_replace("\xE2\x80\xA8", "\n<br>", $twtContent);
+
+				// For some reason I was having trouble finding this nomenclature
+				// that's why I leave the UTF-8 representation for future reference
+				$twtContent = str_replace("\u{2028}", "\n<br>", $twtContent);
 
 				// Get and remote the hash
 				$hash = getReplyHashFromTwt($twtContent);

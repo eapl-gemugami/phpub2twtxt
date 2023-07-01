@@ -115,7 +115,7 @@ function base32Encode($input) {
 	return $base32String;
 }
 
-function generateRandomSecret($length = 20) {
+function generateRandomSecret($length = 32) {
 	// https://medium.com/@nicola88/two-factor-authentication-with-totp-ccc5f828b6df
 	$bytes = random_bytes($length);
 	$base32 = base32Encode($bytes);
@@ -123,15 +123,15 @@ function generateRandomSecret($length = 20) {
 	return substr($base32, 0, $length);
 }
 
+# Examples of usage (To move somewhere else)
 /*
 $randomSecret = generateRandomSecret();
-echo "Random Secret Key: $randomSecret";
-*/
+echo "Random Secret Key: $randomSecret<br>\n";
 
-// Example usage
 $secret = 'K3OBZ7XPR6T4PTNXSNCQ';
 $enteredCode = '123456';
 $enteredCode = $_GET['c'];
+$secret = $_GET['s'];
 $isCodeValid = verifyTOTP($secret, $enteredCode);
 
 if ($isCodeValid) {
@@ -140,5 +140,6 @@ if ($isCodeValid) {
 	echo "Code $enteredCode is invalid!<br>";
 }
 
-//$code = generateTOTP($secret);
-//echo "TOTP code: $code\n";
+$code = generateTOTP($secret);
+echo "TOTP code: $code\n";
+*/

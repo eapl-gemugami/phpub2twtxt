@@ -72,7 +72,7 @@ krsort($twts, SORT_NUMERIC);
 <?php foreach ($twts as $twt) { ?>
 	<p>
 		<?php if($twt->replyToHash) { ?>
-			<em>Reply to <a href="#"><?= $twt->replyToHash?></a></em><br>
+			<em>Part of thread <a href="#"><?= $twt->replyToHash?></a></em><br>
 		<?php } ?>
 		<img src='<?= $twt->avatar ?>' class="rounded"> <strong><?= $twt->nick ?></strong>
 		<a href='#<?= $twt->hash ?>'><span title="<?= $twt->fullDate ?>"><?= $twt->displayDate ?></span></a>
@@ -82,6 +82,8 @@ krsort($twts, SORT_NUMERIC);
 		<?php foreach ($twt->mentions as $mention) { ?>
 			<br><?= $mention['nick'] ?>(<?= $mention['url'] ?>)
 		<?php } ?>
+		<br>
+		<a href="index.php?hash=<?= $twt->hash ?>">Reply</a>
 	</p>
 	<br>
 <?php } ?>

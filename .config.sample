@@ -2,6 +2,10 @@
 ; Copy this file into a .config file and edit the following settings
 
 [main_settings]
+; Enable to display PHP errors
+; true or false
+debug_mode = true
+
 ; Check that your current user has permissions for this file
 ; Check also the user owner is correct, www-data for instance
 txt_file_path = "/var/www/html/twtxt.txt"
@@ -9,14 +13,16 @@ txt_file_path = "/var/www/html/twtxt.txt"
 ; Full URL for your public twtxt.txt file
 public_txt_url = "https://eapl.mx/twtxt.txt"
 
+; Check available timezones here:
+; https://www.php.net/manual/en/timezones.php
+timezone = "UTC"
+
+[security]
+; Generate it with the TOTP module
+totp_secret = ""
+
 ; Get your password with the PHP function 'password_hash'
 ; Check https://www.php.net/manual/en/function.password-hash.php
 ; For example:
 ; echo password_hash("123", PASSWORD_DEFAULT);
 master_password = ""
-
-totp_secret = "K3OBZ7XPR6T4PTNXSNCQ"
-
-; Check available timezones here:
-; https://www.php.net/manual/en/timezones.php
-timezone = "UTC"

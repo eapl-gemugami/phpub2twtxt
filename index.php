@@ -1,17 +1,12 @@
 <?php
-define('DEBUG_MODE', true);
+// TODO: Give a warning if the file is not found
+$config = parse_ini_file('.config');
 
-if (DEBUG_MODE) {
+if ($config['debug_mode']) {
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 }
-
-// Copy the .config.sample file to .config and replace the content
-// with your settings
-
-// TODO: Give a warning if the file is not found
-$config = parse_ini_file('.config');
 
 $txt_file_path = $config['txt_file_path']; // File route
 $public_txt_url = $config['public_txt_url'];
@@ -22,17 +17,23 @@ $timezone = $config['timezone'];
 session_start();
 
 if (!isset($_SESSION['valid_session']))  {
-	header("location: login.html");
+	header('Location: login.php');
 }
 
-if (isset($_POST['sub'])) {
-	// We assume $_SESSION['valid_session'] set means we have a valid_access now
+$textareaValue = '';
+if (isset($_GET['hash'])) {
+	$hash = $_GET['hash'];
+	$textareaValue = "(#$hash) ";
+}
+
+if (isset($_POST['mit'])) {
 	$valid_access = true;
 
 	if ($valid_access) {
 		$new_post = filter_input(INPUT_POST, 'new_post');
-		$new_post = str_replace("\n","\u{2028}", $new_post);
-		$new_post = str_replace("\r","", $new_post);
+		// Replace new lines for Line separator character (U+2028)
+		$new_post = str_replace("\n", "\u{2028}", $new_post);
+		$new_post = str_replace("\r", '', $new_post);
 
 		if ($new_post) {
 			// Check if we have a point to insert the next Twt
@@ -79,8 +80,9 @@ if (isset($_POST['sub'])) {
 	<?php if(isset($_GET["retry"])){echo '<div id="retry">Your password isn\'t valid, check that!</div>';} ?>
 	<form method="POST" class="column">
 		<div id="posting">
-			<textarea id="new_post" name="new_post" rows="4" cols="100" autofocus placeholder="Type you twtxt post here"></textarea>
-			<input type="submit" value="Post" name="sub">
+			<textarea id="new_post" name="new_post" rows="4" cols="100"
+				autofocus placeholder="Type you twtxt post here"><?= $textareaValue ?></textarea>
+			<input type="submit" value="Post" name="submit">
 		</div>
 	</form>
 	<p>

@@ -1,12 +1,13 @@
 <?php
-function verifyTOTP($secret, $enteredCode, $window = 1) {
+function verifyTOTP($secret, $enteredCode, $digits = 6, $window = 1) {
 	$windowTime = 30;
 	$timeSlice = floor(time() / $windowTime);
 
 	for ($i = -$window; $i <= $window; $i++) {
 		$timeShift = $i * $windowTime;
 		$time = $timeSlice + $timeShift;
-		$generatedCode = generateTOTP($secret, $time);
+		$generatedCode = generateTOTP($secret, $digits, $time);
+		//echo "Digits $digits<br>";
 		//echo "Generated code $i: $generatedCode $timeShift<br>";
 
 		if ($generatedCode === $enteredCode) {
@@ -17,7 +18,7 @@ function verifyTOTP($secret, $enteredCode, $window = 1) {
 	return false; // Code is not valid
 }
 
-function generateTOTP($secret, $timeSlice = null, $digits = 6) {
+function generateTOTP($secret, $digits = 6, $timeSlice = null) {
 	if ($timeSlice === null) {
 		$timeSlice = floor(time() / 30);
 	}
@@ -130,16 +131,22 @@ echo "Random Secret Key: $randomSecret<br>\n";
 
 $secret = 'K3OBZ7XPR6T4PTNXSNCQ';
 $enteredCode = '123456';
-$enteredCode = $_GET['c'];
-$secret = $_GET['s'];
-$isCodeValid = verifyTOTP($secret, $enteredCode);
+$digits = 6;
+if (isset($_GET['c']) && isset($_GET['s'])) {
+	$enteredCode = $_GET['c'];
+	$secret = $_GET['s'];
+	$isCodeValid = verifyTOTP($secret, $digits, $enteredCode);
 
-if ($isCodeValid) {
-	echo "Code $enteredCode is valid!<br>";
-} else {
-	echo "Code $enteredCode is invalid!<br>";
+	if ($isCodeValid) {
+		echo "Code $enteredCode is valid!<br>";
+	} else {
+		echo "Code $enteredCode is invalid!<br>";
+	}
 }
 
 $code = generateTOTP($secret);
-echo "TOTP code: $code\n";
+echo "TOTP code: $code\n<br>";
+
+$code = generateTOTP($secret, 8);
+echo "TOTP code: $code\n<br>";
 */

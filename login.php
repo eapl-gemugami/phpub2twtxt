@@ -6,7 +6,11 @@ $config = parse_ini_file('.config');
 
 if (isset($_POST['totp'])) {
 	$topt = trim($_POST['totp']);
-	$isCodeValid = verifyTOTP($config['totp_secret'], $topt);
+	//echo intval($config['totp_digits']);
+
+	$isCodeValid = verifyTOTP($config['totp_secret'], $topt, intval($config['totp_digits']));
+
+	// TODO: Add checks to avoid Brute force attacks by IP or similar
 
 	if ($isCodeValid) {
 		$_SESSION['valid_session'] = true;

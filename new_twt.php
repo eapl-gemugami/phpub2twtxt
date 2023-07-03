@@ -10,7 +10,7 @@ if ($config['debug_mode']) {
 
 $txt_file_path = $config['txt_file_path']; // File route
 $public_txt_url = $config['public_txt_url'];
-$pass = $config['master_password'];
+#$pass = $config['master_password'];
 
 $timezone = $config['timezone'];
 

@@ -195,16 +195,12 @@ function updateCachedFile($filePath, $cacheDurationSecs = 15) {
 
 	// File doesn't exist in cache or has expired, so fetch and cache it
 	// TODO: Seems it's not working right!
-	if (!file_exists($cacheFilePath)) {
-		echo "File $cacheFilePath doesn't exist\n";
-	}
+	$fileDoesntExist = !file_exists($cacheFilePath);
+	$fileIsOld = !((time() - filemtime($cacheFilePath)) < $cacheDurationSecs);
 
-	if (!((time() - filemtime($cacheFilePath)) < $cacheDurationSecs)) {
-		echo "File $cacheFilePath has more than $cacheDurationSecs seconds.\n";
-	}
-
-	if (!file_exists($cacheFilePath) || !((time() - filemtime($cacheFilePath)) < $cacheDurationSecs)) {
-		echo "Updating Cached file $cacheFilePath\n";
+	$fileIsOld = !((time() - filemtime($cacheFilePath)) < $cacheDurationSecs);
+	if ($fileDoesntExist || ) {
+		echo "Updating Cached file $cacheFilePath\n<br>";
 		$contents = file_get_contents($filePath);
 		file_put_contents($cacheFilePath, $contents);
 	}

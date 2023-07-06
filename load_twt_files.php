@@ -5,9 +5,9 @@ require_once('base.php');
 require_once('functions.php');
 require_once('hash.php');
 
-ini_set('max_execution_time', '300');
+ini_set('max_execution_time', '600');
 
-ob_start();
+#ob_start();
 
 $config = parse_ini_file('.config');
 $url = $config['public_txt_url'];
@@ -20,8 +20,8 @@ if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 	die('Not a valid URL');
 }
 
-echo "Loading URL: $url\n<br>\n<br>";
-ob_flush();
+#echo "Loading URL: $url\n<br>\n<br>";
+#ob_flush();
 
 const DEBUG_TIME_SECS = 300;
 const PRODUCTION_TIME_SECS = 5;
@@ -40,14 +40,14 @@ foreach ($fileLines as $currentLine) {
 }
 
 # Load all the files
-# Save a flag to know it's loading files
+# Save a flag to know it's loading files in the background
 foreach ($twtFollowingList as $following) {
 	echo "Updating: $following[1]\n<br>";
-	ob_flush();
+	#ob_flush();
 	updateCachedFile($following[1]);
 }
-echo 'Finished';
-ob_flush();
+#echo 'Finished';
+#ob_flush();
 
 header('Location: .');
 exit();

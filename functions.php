@@ -199,7 +199,11 @@ function updateCachedFile($filePath, $cacheDurationSecs = 15) {
 		echo "File $cacheFilePath doesn't exist\n";
 	}
 
-	if (!file_exists($cacheFilePath) || ((time() - filemtime($cacheFilePath)) < $cacheDurationSecs)) {
+	if (!((time() - filemtime($cacheFilePath)) < $cacheDurationSecs)) {
+		echo "File $cacheFilePath has more than $cacheDurationSecs seconds.\n";
+	}
+
+	if (!file_exists($cacheFilePath) || !((time() - filemtime($cacheFilePath)) < $cacheDurationSecs)) {
 		echo "Updating Cached file $cacheFilePath\n";
 		$contents = file_get_contents($filePath);
 		file_put_contents($cacheFilePath, $contents);

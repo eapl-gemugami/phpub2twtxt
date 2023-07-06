@@ -39,7 +39,6 @@ foreach ($fileLines as $currentLine) {
 			$parsedTwtxtFile = getTwtsFromTwtxtString($followURL);
 			if (!is_null($parsedTwtxtFile)) {
 				$parsedTwtxtFiles[$parsedTwtxtFile->mainURL] = $parsedTwtxtFile;
-
 			}
 		}
 	}
@@ -87,7 +86,7 @@ krsort($twts, SORT_NUMERIC);
 		<strong><span title="<?= $twt->mainURL ?>"><?= $twt->nick ?></span></strong>
 		<a href='#<?= $twt->hash ?>'></a>
 		<br>
-		<span title="<?= $twt->fullDate ?>"><?= $twt->displayDate ?></span>
+		<span title="<?= $twt->fullDate ?> "><?= $twt->displayDate ?></span>
 
 		<br>
 		<?= $twt->content ?>

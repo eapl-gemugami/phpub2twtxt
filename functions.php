@@ -134,6 +134,11 @@ function getTimeElapsedString($timestamp, $full = false) {
 	$ago = new DateTime;
 	$ago->setTimestamp($timestamp);
 
+	$agoText = 'ago';
+	if ($now < $ago) {
+		$agoText = 'in the future';
+	}
+
 	$diff = $now->diff($ago);
 
 	$diff->w = floor($diff->d / 7);
@@ -157,7 +162,7 @@ function getTimeElapsedString($timestamp, $full = false) {
 	}
 
 	if (!$full) $string = array_slice($string, 0, 1);
-	return $string ? implode(', ', $string) . ' ago' : 'just now';
+	return $string ? implode(', ', $string) . " $agoText" : 'just now';
 }
 
 function getCachedFileContentsOrUpdate($fileURL, $cacheDurationSecs = 15) {
@@ -207,6 +212,7 @@ function updateCachedFile($filePath, $cacheDurationSecs = 15) {
 
 function getTwtsFromTwtxtString($url) {
 	$fileContent = getCachedFileContents($url);
+
 	if (is_null($fileContent)) {
 		return null;
 	}
@@ -295,7 +301,7 @@ function getTwtsFromTwtxtString($url) {
 
 				$twt->originalTwtStr = $currentLine;
 				$twt->hash = getHashFromTwt($currentLine, $twtxtData->mainURL);
-				$twt->fullDate = date('j F Y h:i', $timestamp);
+				$twt->fullDate = date('j F Y h:i:s A', $timestamp) . ' (UTC)';
 				$twt->displayDate = $displayDate;
 				$twt->content = $twtContent;
 				$twt->replyToHash = $hash;
@@ -306,7 +312,6 @@ function getTwtsFromTwtxtString($url) {
 				$twt->mainURL = $twtxtData->mainURL;
 
 				$twtxtData->twts[$timestamp] = $twt;
-
 				// TODO: Interpret the content as markdown
 			}
 		}

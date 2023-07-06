@@ -50,3 +50,4 @@ echo 'Finished';
 ob_flush();
 
 header('Location: .');
+exit();

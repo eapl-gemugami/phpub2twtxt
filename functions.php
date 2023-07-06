@@ -160,21 +160,21 @@ function getTimeElapsedString($timestamp, $full = false) {
 	return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 
-function getCachedFileContentsOrUpdate($filePath, $cacheDurationSecs = 15) {
+function getCachedFileContentsOrUpdate($fileURL, $cacheDurationSecs = 15) {
 	# TODO: Process the Warning
 	# Warning: file_get_contents(https://eapl.mx/twtxt.net):
 	# failed to open stream: HTTP request failed! HTTP/1.1 404 Not Found in
 
-	$cacheFile = getCachedFileName($filePath);
+	$cacheFilePath = getCachedFileName($fileURL);
 
 	// Check if cache file exists and it's not expired
-	if (file_exists($cacheFile) && time() - filemtime($cacheFile) < $cacheDurationSecs) {
-		return file_get_contents($cacheFile);
+	if (file_exists($cacheFilePath) && (time() - filemtime($cacheFilePath)) < $cacheDurationSecs) {
+		return file_get_contents($cacheFilePath);
 	}
 
 	// File doesn't exist in cache or has expired, so fetch and cache it
-	$contents = file_get_contents($filePath);
-	file_put_contents($cacheFile, $contents);
+	$contents = file_get_contents($fileURL);
+	file_put_contents($cacheFilePath, $contents);
 
 	return $contents;
 }
@@ -191,12 +191,18 @@ function getCachedFileContents($filePath) {
 }
 
 function updateCachedFile($filePath, $cacheDurationSecs = 15) {
-	$cacheFile = getCachedFileName($filePath);
+	$cacheFilePath = getCachedFileName($filePath);
 
 	// File doesn't exist in cache or has expired, so fetch and cache it
-	if (!file_exists($cacheFile) || (time() - filemtime($cacheFile) < $cacheDurationSecs)) {
+	// TODO: Seems it's not working right!
+	if (!file_exists($cacheFilePath)) {
+		echo "File $cacheFilePath doesn't exist\n";
+	}
+
+	if (!file_exists($cacheFilePath) || ((time() - filemtime($cacheFilePath)) < $cacheDurationSecs)) {
+		echo "Updating Cached file $cacheFilePath\n";
 		$contents = file_get_contents($filePath);
-		file_put_contents($cacheFile, $contents);
+		file_put_contents($cacheFilePath, $contents);
 	}
 }
 

@@ -198,8 +198,7 @@ function updateCachedFile($filePath, $cacheDurationSecs = 15) {
 	$fileDoesntExist = !file_exists($cacheFilePath);
 	$fileIsOld = !((time() - filemtime($cacheFilePath)) < $cacheDurationSecs);
 
-	$fileIsOld = !((time() - filemtime($cacheFilePath)) < $cacheDurationSecs);
-	if ($fileDoesntExist || ) {
+	if ($fileDoesntExist || $fileIsOld) {
 		echo "Updating Cached file $cacheFilePath\n<br>";
 		$contents = file_get_contents($filePath);
 		file_put_contents($cacheFilePath, $contents);

@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-session_name('twtxt');
 session_start([
 	'name' => 'twtxt',
 	'use_strict_mode' => true,

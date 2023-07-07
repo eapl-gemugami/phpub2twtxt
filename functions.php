@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 class TwtxtFile {
 	public $mainURL = ''; // First found URL
 	public $URLs = [];

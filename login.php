@@ -15,6 +15,7 @@ if (isset($_POST['totp'])) {
 	if ($isCodeValid) {
 		$_SESSION['valid_session'] = true;
 		header('Location: .');
+		exit();
 	} else {
 		$invalidCode = true;
 	}
@@ -34,11 +35,11 @@ if (isset($_POST['totp'])) {
 	<form method="POST" class="column">
 		<div id="login">
 			<?php if (isset($invalidCode)) { ?>
-				<div>TOTP is invalid, try again!</div>
+				<div>TOTP is invalid, try again!</div><br>
 			<?php } ?>
-			<label for="fname">TOTP:</label>
+			<label for="fname">One Time Password (TOTP):</label>
 			<br>
-  		<input type="text" id="totp" name="totp"><br>
+  		<input type="number" id="totp" name="totp"><br>
 			<input type="submit" value="Login" class="btn">
 		</div>
 	</form>

@@ -1,7 +1,6 @@
 <?php
 # Shows the timeline for a user
-
-date_default_timezone_set('UTC');
+declare(strict_types=1);
 
 require_once('base.php');
 require_once('functions.php');
@@ -9,6 +8,8 @@ require_once('hash.php');
 
 $config = parse_ini_file('.config');
 $url = $config['public_txt_url'];
+
+date_default_timezone_set('UTC');
 
 if (!empty($_GET['url'])) {
 	$url = $_GET['url'];

@@ -1,4 +1,7 @@
 <?php
 require_once('base.php');
+session_unset();
 session_destroy();
-header('Refresh: 0; URL = index.php');
+session_write_close();
+header('Location: .');
+exit();

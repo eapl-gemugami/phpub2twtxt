@@ -18,8 +18,6 @@ require_once('base.php');
 
 if (!isset($_SESSION['valid_session']))  {
 	header('Location: login.php');
-	//session_regenerate_id(true);
-	//session_write_close();
 	exit();
 }
 

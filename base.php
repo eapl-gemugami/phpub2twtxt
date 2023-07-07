@@ -9,6 +9,7 @@ session_start([
 	'sid_length' => 64,
 	'sid_bits_per_character' => 6,
 	'cookie_samesite' => 'Strict',
+	'save_path' => '/tmp/twtxt/sessions/'
 ]);
 
 // TODO: Implement improvements to session

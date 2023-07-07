@@ -8,10 +8,8 @@ if ($config['debug_mode']) {
 	error_reporting(E_ALL);
 }
 
-$txt_file_path = $config['txt_file_path']; // File route
+$txt_file_path = $config['txt_file_path'];
 $public_txt_url = $config['public_txt_url'];
-#$pass = $config['master_password'];
-
 $timezone = $config['timezone'];
 
 require_once('base.php');

@@ -8,6 +8,7 @@ session_start([
 	'gc_maxlifetime' => 604800, // 7 days
 	'sid_length' => 64,
 	'sid_bits_per_character' => 6,
+	'cookie_samesite' => 'Strict',
 ]);
 
 // TODO: Implement improvements to session

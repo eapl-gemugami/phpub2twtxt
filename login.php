@@ -39,7 +39,7 @@ if (isset($_POST['totp'])) {
 			<?php } ?>
 			<label for="fname">One Time Password (TOTP):</label>
 			<br>
-  		<input type="number" id="totp" name="totp"><br>
+  		<input type="text" id="totp" name="totp"><br>
 			<input type="submit" value="Login" class="btn">
 		</div>
 	</form>

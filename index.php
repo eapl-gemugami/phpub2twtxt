@@ -2,9 +2,27 @@
 # Shows the timeline for a user
 declare(strict_types=1);
 
-require_once('base.php');
+# Parameters
+#
+# url(string): Gets
+# Default: public_txt_url in .config
+#
+# timeline_url(string) = Gets the timeline for that specificed URL (twtxt)
+# Default: public_txt_url in .config
+#
+# page(int):
+# Default: Page 1 of N
+# If page is higher than N, shows nothing
+#
+# hash(string) =
+#
+#
+
+require_once('session.php');
 require_once('functions.php');
 require_once('hash.php');
+
+const TWTS_PER_PAGE = 50;
 
 $config = parse_ini_file('.config');
 $url = $config['public_txt_url'];
@@ -55,6 +73,9 @@ foreach ($parsedTwtxtFiles as $currentTwtFile) {
 }
 
 krsort($twts, SORT_NUMERIC);
+$page = 1;
+$startingTwt = (($page - 1) * TWTS_PER_PAGE);
+$twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -100,6 +121,7 @@ krsort($twts, SORT_NUMERIC);
 	</p>
 	<br>
 <?php } ?>
+	<div><a href="#">Next</a></div>
 	<footer><hr><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>
 </body>
 </html>

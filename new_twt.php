@@ -12,7 +12,7 @@ $txt_file_path = $config['txt_file_path'];
 $public_txt_url = $config['public_txt_url'];
 $timezone = $config['timezone'];
 
-require_once('base.php');
+require_once('session.php');
 
 if (!isset($_SESSION['valid_session']))  {
 	header('Location: login.php');

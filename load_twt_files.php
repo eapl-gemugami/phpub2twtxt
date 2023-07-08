@@ -1,7 +1,7 @@
 <?php
 # Gets the followers from an URL and then gets all the Followers twtxt.txt files
 # Intended to be run in the background
-require_once('base.php');
+require_once('session.php');
 require_once('functions.php');
 require_once('hash.php');
 

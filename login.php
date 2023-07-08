@@ -1,5 +1,5 @@
 <?php
-require_once('base.php');
+require_once('session.php');
 
 require_once('libs/TOTP.php');
 $config = parse_ini_file('.config');

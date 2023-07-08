@@ -4,7 +4,6 @@
 - [ ] Generate threads with replies
 - [ ] Sort your follower list by last twt (and show that in the list)
 - [ ] Add a button to reply to a twt
-- [ ] Decide if we allow Selfsigned certificates
 ## Should have
 - [ ] Fix Login redirection with Post-Redirect-Get
 - [ ] Allow only a login every 3 seconds
@@ -23,8 +22,10 @@
 - [ ] Check replies from your followers to know if someone replied to you
 - [ ] Auto-anounce that you've replied
 - [ ] Add a URL router for fancy URLs
+- [ ] Decide if we allow Selfsigned certificates
 
 # Done
+- [X] Fixed Session cookie time (to 7 days)
 - [X] Fixed responsivity
 - [X] Login with TOTP
 - [X] Get the timeline of all your suscriptions

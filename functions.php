@@ -122,7 +122,9 @@ function replaceMentionsFromTwt($twtString) {
 
 function replaceLinksFromTwt($twtString) {
 	// Regular expression pattern to match URLs
-	$pattern = '/(?<!\S)(\b(https?|ftp|gemini|spartan|gopher):\/\/\S+|\S+\.\S+\.\S+)(?!\S)/';
+	// This expresion was not working for https://youtu.be/ysaNUatLMn0
+	//$pattern = '/(?<!\S)(\b(https?|ftp|gemini|spartan|gopher):\/\/\S+|\S+\.\S+\.\S+)(?!\S)/';
+	$pattern = '/(?<!\S)((?:https?|ftp|gemini|spartan|gopher):\/\/\S+|(?:\S+\.)+\S+)(?!\S)/';
 
 	// Replace URLs with clickable links
 	$replacement = '<a href="$1">$1</a>';

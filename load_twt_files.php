@@ -42,7 +42,7 @@ foreach ($fileLines as $currentLine) {
 # Load all the files
 # Save a flag to know it's loading files in the background
 foreach ($twtFollowingList as $following) {
-	echo "Updating: $following[1]\n<br>";
+	#echo "Updating: $following[1]\n<br>";
 	#ob_flush();
 	updateCachedFile($following[1]);
 }

@@ -82,7 +82,7 @@ function getDoubleParameter($keywordToFind, $string) {
 	return null;
 }
 
-function getReplyHashFromTwt($twtString) {
+function getReplyHashFromTwt(string $twtString): string {
 	// Extract the text between parentheses using regular expressions
 	$pattern = '/\(#([^\)]+)\)/'; // Matches "(#<text>)"
 	preg_match($pattern, $twtString, $matches);
@@ -91,9 +91,11 @@ function getReplyHashFromTwt($twtString) {
 		$textBetweenParentheses = $matches[1];
 		return $textBetweenParentheses;
 	}
+
+	return '';
 }
 
-function getMentionsFromTwt($twtString) {
+function getMentionsFromTwt(string $twtString) {
 	$pattern = '/@<([^>]+)\s([^>]+)>/'; // Matches "@<nick url>"
 	preg_match_all($pattern, $twtString, $matches, PREG_SET_ORDER);
 
@@ -108,19 +110,22 @@ function getMentionsFromTwt($twtString) {
 	return $result;
 }
 
-function replaceMentionsFromTwt($twtString) {
-	$patterns = array(
-		'/@<([^>]+)\s([^>]+)>/' => '@$1',
-		'/https:\/\/[^\/]+/' => ''
-	);
+function replaceMentionsFromTwt(string $twtString): string {
+	// Example input: 'Hello @<eapl.mx https://eapl.mx/twtxt.txt>, how are you? @<nick https://server.com/something/twtxt.txt>';
+	// Example output: Hello <a href="?url=https://eapl.mx/twtxt.txt">@eapl.mx@eapl.mx/twtxt.txt</a>, how are you? <a href="?url=https://server.com/something/twtxt.txt">@nick@server.com/something/twtxt.txt</a>
 
-	$newString = preg_replace_callback(array_keys($patterns),
-			function($matches) use ($patterns) {
-		return $patterns[$matches[0]];
-	}, $string);
+	#$pattern = '/@<([^ ]+)\s([^>]+)>/';
+	#$replacement = '<a href="?url=$2">@$1@$2</a>';
+	#$twtString = '@<nick https://eapl.mx/twtxt.txt>';
+	$pattern = '/@<([^ ]+) ([^>]+)>/';
+	$replacement = '@$1';
+
+	$result = preg_replace($pattern, $replacement, $twtString);
+
+	return $result;
 }
 
-function replaceLinksFromTwt($twtString) {
+function replaceLinksFromTwt(string $twtString) {
 	// Regular expression pattern to match URLs
 	// This expresion was not working for https://youtu.be/ysaNUatLMn0
 	//$pattern = '/(?<!\S)(\b(https?|ftp|gemini|spartan|gopher):\/\/\S+|\S+\.\S+\.\S+)(?!\S)/';
@@ -205,12 +210,21 @@ function updateCachedFile($filePath, $cacheDurationSecs = 15) {
 	// File doesn't exist in cache or has expired, so fetch and cache it
 	// TODO: Seems it's not working right!
 	$fileDoesntExist = !file_exists($cacheFilePath);
-	$fileIsOld = !((time() - filemtime($cacheFilePath)) < $cacheDurationSecs);
+	$fileIsOld = false;
+	if (!$fileDoesntExist) {
+		$fileIsOld = !((time() - filemtime($cacheFilePath)) < $cacheDurationSecs);
+	}
 
 	if ($fileDoesntExist || $fileIsOld) {
-		echo "Updating Cached file $cacheFilePath\n<br>";
-		$contents = file_get_contents($filePath);
-		file_put_contents($cacheFilePath, $contents);
+		#echo "Loading Cached file $cacheFilePath\n<br>";
+		$contents = @file_get_contents($filePath);
+
+		if ($contents === true) {
+			// Loaded correctly
+			#file_put_contents($cacheFilePath, $contents);
+			#echo "Saved successfully \n<br>";
+		}
+		#echo "\n<br>";
 	}
 }
 
@@ -268,6 +282,8 @@ function getTwtsFromTwtxtString($url) {
 				$dateStr = $explodedLine[0];
 				$twtContent = $explodedLine[1];
 
+				$twtContent = replaceMentionsFromTwt($twtContent);
+
 				// Convert HTML problematic characters
 				$twtContent = htmlentities($twtContent);
 
@@ -281,14 +297,16 @@ function getTwtsFromTwtxtString($url) {
 				$twtContent = str_replace("\u{2028}", "\n<br>", $twtContent);
 				$twtContent = replaceLinksFromTwt($twtContent);
 
+
 				// Get and remote the hash
 				$hash = getReplyHashFromTwt($twtContent);
 				if ($hash) {
 					$twtContent = str_replace("(#$hash)", '', $twtContent);
 				}
 
-				// Get mentions
+				// TODO: Get mentions
 				$mentions = getMentionsFromTwt($twtContent);
+
 
 				// Get Lang metadata
 

@@ -72,8 +72,26 @@ foreach ($parsedTwtxtFiles as $currentTwtFile) {
 	}
 }
 
+if (!empty($_GET['hash'])) {
+	$hash = $_GET['hash'];
+
+	$twts = array_filter($twts, function($twt) use ($hash) {
+		return $twt->hash === $hash || $twt->replyToHash === $hash;
+	});
+
+}
+
 krsort($twts, SORT_NUMERIC);
+
+if (!empty($_GET['hash'])) {
+	$twts = array_reverse($twts, true);
+}
+
 $page = 1;
+if (!empty($_GET['page'])) {
+	$page = intval($_GET['page']);
+}
+
 $startingTwt = (($page - 1) * TWTS_PER_PAGE);
 $twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 ?>
@@ -86,30 +104,26 @@ $twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<h1>twtxt</h1>
+	<h1><a href=".">twtxt</a></h1>
 	<h2>Timeline for <a href="<?= $url ?>"><?= $url ?></a></h2>
-	<h3><a href="load_twt_files.php">Refresh timeline</a></h3>
-	<h3><a href="new_twt.php">New twt</a></h3>
-	<h3>Following: <?php echo count($twtFollowingList); ?></h3>
-	<!--
-<?php foreach ($twtFollowingList as $currentFollower) { ?>
+	<h3><a href="load_twt_files.php?url=<?= $url ?>">Reload timeline</a></h3>
+	<h3><a href="new_twt.php">Write a new twt</a></h3>
+	<details><summary>Following: <?php echo count($twtFollowingList); ?></summary>
+    <?php foreach ($twtFollowingList as $currentFollower) { ?>
 	<p>
-		<a href="?url=<?= $currentFollower[1] ?>"><?= $currentFollower[0] ?></a>
+		<a href="?url=<?= $currentFollower[1] ?>"><?= $currentFollower[0] ?></a> <?= $currentFollower[1] ?>
 	</p>
 <?php } ?>
--->
+	</details>
 	<hr>
 <?php foreach ($twts as $twt) { ?>
 	<p>
-		<?php if($twt->replyToHash) { ?>
-			<em>Part of thread <a href="#"><?= $twt->replyToHash?></a></em><br>
-		<?php } ?>
+<?php if($twt->replyToHash) { ?>
+		<em>Part of thread <a href="?hash=<?= $twt->replyToHash?>"><?= $twt->replyToHash?></a></em><br>
+<?php } ?>
 		<img src='<?= $twt->avatar ?>' class="rounded">
 		<strong><span title="<?= $twt->mainURL ?>"><?= $twt->nick ?></span></strong>
-		<a href='#<?= $twt->hash ?>'></a>
-		<br>
-		<span title="<?= $twt->fullDate ?> "><?= $twt->displayDate ?></span>
-
+		<a href='?hash=<?= $twt->hash ?>'><span title="<?= $twt->fullDate ?> "><?= $twt->displayDate ?></span></a>
 		<br>
 		<?= $twt->content ?>
 		<?php foreach ($twt->mentions as $mention) { ?>
@@ -121,7 +135,7 @@ $twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 	</p>
 	<br>
 <?php } ?>
-	<div><a href="#">Next</a></div>
+	<div><a href="?page=<?= $page + 1 ?>">Next</a></div>
 	<footer><hr><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>
 </body>
 </html>

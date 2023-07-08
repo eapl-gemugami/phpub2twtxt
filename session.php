@@ -1,5 +1,6 @@
 <?php
 //const COOKIE_LIFETIME = 7 * 24 * 60 * 60; // 7 days * 24 hours * 60 minutes * 60 seconds
+const GARBAGE_COLLECTOR_LIFETIME = 30 * 60; // 5 minutes * 60 seconds
 const COOKIE_LIFETIME = 5 * 60; // 5 minutes * 60 seconds
 
 session_start([
@@ -8,7 +9,7 @@ session_start([
 	'cookie_httponly' => true,
 	'cookie_secure' => true,
 	'cookie_lifetime' => COOKIE_LIFETIME,
-	'gc_maxlifetime' => COOKIE_LIFETIME,
+	'gc_maxlifetime' => GARBAGE_COLLECTOR_LIFETIME,
 	'sid_length' => 64,
 	'sid_bits_per_character' => 6,
 	'cookie_samesite' => 'Strict',

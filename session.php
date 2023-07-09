@@ -17,6 +17,8 @@ session_start([
 	'save_path' => '/var/lib/php/sessions/twtxt'
 ]);
 
+$validSession = $_SESSION['valid_session'] ?? null;
+
 // Check if the session is new or expired
 if (!isset($_SESSION['last_activity'])
 		|| (time() - $_SESSION['last_activity']) > TIME_TO_REFRESH_SESSION) {
@@ -28,6 +30,7 @@ if (!isset($_SESSION['last_activity'])
 
 	// Update the session last activity timestamp
 	$_SESSION['last_activity'] = time();
+	$_SESSION['valid_session'] = $validSession;
 }
 
 // Cookie samesite (For PHP <7.3)

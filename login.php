@@ -12,6 +12,8 @@ if (isset($_POST['totp'])) {
 	// TODO: Add checks to avoid Brute force attacks by IP or similar
 
 	if ($isCodeValid) {
+		// Based on: https://shiflett.org/articles/session-fixation
+		session_regenerate_id();
 		$_SESSION['valid_session'] = true;
 		header('Location: .');
 		exit();

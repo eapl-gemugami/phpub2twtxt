@@ -219,12 +219,12 @@ function updateCachedFile($filePath, $cacheDurationSecs = 15) {
 		#echo "Loading Cached file $cacheFilePath\n<br>";
 		$contents = @file_get_contents($filePath);
 
-		if ($contents === true) {
-			// Loaded correctly
-			#file_put_contents($cacheFilePath, $contents);
-			#echo "Saved successfully \n<br>";
+		if ($contents === false) {
+			// File loaded with errors, skip saving it
+			return;
 		}
-		#echo "\n<br>";
+
+		file_put_contents($cacheFilePath, $contents);
 	}
 }
 

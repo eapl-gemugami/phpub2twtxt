@@ -13,7 +13,8 @@ session_start([
 	'sid_length' => 64,
 	'sid_bits_per_character' => 6,
 	//'cookie_samesite' => 'Strict', // Not compatible with PHP lower than 7.3
-	//'save_path' => '/var/lib/php/sessions/twtxt'
+	// TODO: Move this to config
+	'save_path' => '/var/lib/php/sessions/twtxt'
 ]);
 
 // Check if the session is new or expired
@@ -29,7 +30,7 @@ if (!isset($_SESSION['last_activity'])
 	$_SESSION['last_activity'] = time();
 }
 
-// Cookie samesite
+// Cookie samesite (For PHP <7.3)
 // https://stackoverflow.com/questions/39750906/php-setcookie-samesite-strict
 
 // Add CSRF protection like on

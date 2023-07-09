@@ -4,7 +4,7 @@
 [main_settings]
 ; Enable to display PHP errors
 ; true or false
-debug_mode = true
+debug_mode = false
 
 ; Check that your current user has permissions for this file
 ; Check also the user owner is correct, www-data for instance
@@ -19,5 +19,7 @@ timezone = "UTC"
 
 [security]
 ; Generate it with the TOTP module
-totp_digits = 8
+totp_digits = 10
 totp_secret = ""
+
+session_path = "/var/lib/php/sessions/twtxt"

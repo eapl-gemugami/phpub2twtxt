@@ -3,11 +3,13 @@ function verifyTOTP($secret, $enteredCode, $digits = 6, $window = 1) {
 	$windowTime = 30;
 	$timeSlice = floor(time() / $windowTime);
 
+	$enteredCode = trim($enteredCode);
+	$enteredCode = str_replace(' ', '', trim($enteredCode));
+
 	for ($i = -$window; $i <= $window; $i++) {
 		$timeShift = $i * $windowTime;
 		$time = $timeSlice + $timeShift;
 		$generatedCode = generateTOTP($secret, $digits, $time);
-		$enteredCode = str_replace(' ', '', trim($enteredCode));
 
 		if ($generatedCode === $enteredCode) {
 			return true; // Code is valid within the window

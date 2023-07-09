@@ -118,18 +118,17 @@ $twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 	<hr>
 <?php foreach ($twts as $twt) { ?>
 	<p>
-<?php if($twt->replyToHash) { ?>
-		<em>Part of thread <a href="?hash=<?= $twt->replyToHash?>"><?= $twt->replyToHash?></a></em><br>
-<?php } ?>
-		<img src='<?= $twt->avatar ?>' class="rounded">
+		<img src='<?= $twt->avatar ?>' class="rounded" onerror="this.onerror=null;this.src='imgs/image_not_found.png';">
 		<strong><span title="<?= $twt->mainURL ?>"><?= $twt->nick ?></span></strong>
 		<a href='?hash=<?= $twt->hash ?>'><span title="<?= $twt->fullDate ?> "><?= $twt->displayDate ?></span></a>
 		<br>
+<?php if($twt->replyToHash) { ?>
+		<em>Reply to thread <a href="?hash=<?= $twt->replyToHash?>"><?= $twt->replyToHash?></a></em><br>
+<?php } ?>
 		<?= $twt->content ?>
 		<?php foreach ($twt->mentions as $mention) { ?>
 			<br><?= $mention['nick'] ?>(<?= $mention['url'] ?>)
 		<?php } ?>
-		<br>
 		<br>
 		<a href="new_twt.php?hash=<?= $twt->hash ?>">Reply</a>
 	</p>

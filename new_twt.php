@@ -75,22 +75,17 @@ if (isset($_POST['submit'])) {
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<h1>twtxt</h1>
-	<p>A Web interface to post quickly to your twtxt.txt file</p>
+<h1><a href=".">twtxt</a></h1>
 	<?php if(isset($_GET["retry"])){echo '<div id="retry">Your password isn\'t valid, check that!</div>';} ?>
 	<form method="POST" class="column">
 		<div id="posting">
 			<textarea class="textinput" id="new_post" name="new_post"
 				rows="4" cols="100" autofocus
-				placeholder="Type you twtxt post here"><?= $textareaValue ?></textarea>
+				placeholder="Your twt"><?= $textareaValue ?></textarea>
 			<br>
 			<input class="btn" type="submit" value="Post" name="submit">
 		</div>
 	</form>
-	<p>
-		<a href="<?= $public_txt_url ?>">Your twtxt.txt file</a>
-	</p>
-	<footer><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>
 </body>
 </html>
 <?php } ?>

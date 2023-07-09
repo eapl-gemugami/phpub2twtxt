@@ -1,20 +1,15 @@
 # TO DO
 ## Must Have
-- [ ] Get all the twits belonging to a thread, and make the tree
-- [ ] Generate threads with replies
 - [ ] Sort your follower list by last twt (and show that in the list)
-- [ ] Add a button to reply to a twt
 ## Should have
 - [ ] Fix Login redirection with Post-Redirect-Get
 - [ ] Allow only a login every 3 seconds
 - [ ] Check that the Twtxt URLs are valid (by regex or ping)
-- [ ] Read all the twts from your followers
+- [ ] Fix error for following list with Mastodon accounts
 - [ ] Implement discover_url = to know where to inform for followers
 - [ ] Implement discover PHP to receive suscriptions
-- [ ] Cache reads to avoid retreiving same file many times
-- [ ] Show a default avatar for .txts w/o avatar URL
-- [ ] Get Thread hashes (#m443x2q)
-- [ ] Get Menctions @<~duriny https://envs.net/~duriny/twtxt.txt>
+- [/] Show a default avatar for .txts w/o avatar URL
+- [/] Get Menctions @<~duriny https://envs.net/~duriny/twtxt.txt>
 ## Nice to have
 - [ ] Support markdown or gemtext
 - [ ] Support images
@@ -25,6 +20,12 @@
 - [ ] Decide if we allow Selfsigned certificates
 
 # Done
+- [X] Get Thread hashes (#m443x2q)
+- [X] Cache reads to avoid retreiving same file many times
+- [X] Read all the twts from your followers
+- [X] Add a button to reply to a twt
+- [X] Generate threads with replies
+- [X] Get all the twits belonging to a thread, and make the tree
 - [X] Fixed Session cookie time (to 7 days)
 - [X] Fixed responsivity
 - [X] Login with TOTP

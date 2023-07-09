@@ -4,6 +4,11 @@ require_once('session.php');
 require_once('libs/TOTP.php');
 $config = parse_ini_file('.config');
 
+if (isset($_SESSION['valid_session']))  {
+	header('Location: .');
+	exit();
+}
+
 if (isset($_POST['totp'])) {
 	$topt = $_POST['totp'];
 
@@ -13,7 +18,6 @@ if (isset($_POST['totp'])) {
 
 	if ($isCodeValid) {
 		// Based on: https://shiflett.org/articles/session-fixation
-		session_regenerate_id();
 		$_SESSION['valid_session'] = true;
 		header('Location: .');
 		exit();

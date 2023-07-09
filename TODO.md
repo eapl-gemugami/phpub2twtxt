@@ -2,6 +2,7 @@
 ## Must Have
 - [ ] Sort your follower list by last twt (and show that in the list)
 ## Should have
+- [ ] Implement long Session cookie time (to 7 days) refreshing when it's used
 - [ ] Fix Login redirection with Post-Redirect-Get
 - [ ] Allow only a login every 3 seconds
 - [ ] Check that the Twtxt URLs are valid (by regex or ping)
@@ -26,7 +27,6 @@
 - [X] Add a button to reply to a twt
 - [X] Generate threads with replies
 - [X] Get all the twits belonging to a thread, and make the tree
-- [X] Fixed Session cookie time (to 7 days)
 - [X] Fixed responsivity
 - [X] Login with TOTP
 - [X] Get the timeline of all your suscriptions

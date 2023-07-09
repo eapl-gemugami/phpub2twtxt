@@ -12,25 +12,25 @@ session_start([
 	'gc_maxlifetime' => GARBAGE_COLLECTOR_LIFETIME,
 	'sid_length' => 64,
 	'sid_bits_per_character' => 6,
-	//'cookie_samesite' => 'Strict', // Not compatible with PHP lower than 7.3
+	'cookie_samesite' => 'Strict', // Not compatible with PHP lower than 7.3
 	// TODO: Move this to config
 	'save_path' => '/var/lib/php/sessions/twtxt'
 ]);
 
-$validSession = $_SESSION['valid_session'] ?? null;
+if (isset($_SESSION['valid_session'])) {
+	// Check if the session is new or expired
+	if (!isset($_SESSION['last_activity'])
+			|| (time() - $_SESSION['last_activity']) > TIME_TO_REFRESH_SESSION) {
+		// If the session is new or expired, refresh the session ID
+		// TODO: Implement improvements to regenerate
+		// https://www.php.net/manual/en/function.session-regenerate-id.php
+		// https://stackoverflow.com/questions/1236374/session-timeouts-in-php-best-practices
+		session_regenerate_id(true);
 
-// Check if the session is new or expired
-if (!isset($_SESSION['last_activity'])
-		|| (time() - $_SESSION['last_activity']) > TIME_TO_REFRESH_SESSION) {
-	// If the session is new or expired, refresh the session ID
-	// TODO: Implement improvements to regenerate
-	// https://www.php.net/manual/en/function.session-regenerate-id.php
-	// https://stackoverflow.com/questions/1236374/session-timeouts-in-php-best-practices
-	session_regenerate_id(true);
-
-	// Update the session last activity timestamp
-	$_SESSION['last_activity'] = time();
-	$_SESSION['valid_session'] = $validSession;
+		// Update the session last activity timestamp
+		$_SESSION['last_activity'] = time();
+		$_SESSION['valid_session'] = true;
+	}
 }
 
 // Cookie samesite (For PHP <7.3)

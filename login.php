@@ -5,6 +5,12 @@ require_once('libs/TOTP.php');
 $config = parse_ini_file('.config');
 $secretKey = $config['totp_secret'];
 
+if ($config['debug_mode']) {
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+
 if (isset($_SESSION['valid_session']))  {
 	header('Location: .');
 	exit();

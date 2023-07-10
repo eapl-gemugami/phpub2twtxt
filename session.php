@@ -11,7 +11,7 @@ session_start([
 	'cookie_secure' => true,
 	'sid_length' => 64,
 	'sid_bits_per_character' => 6,
-	//'cookie_samesite' => 'Strict', // Not compatible with PHP lower than 7.3
+	'cookie_samesite' => 'Strict', // Not compatible with PHP lower than 7.3
 ]);
 
 function encrypt(string $data, string $key, string $method): string {
@@ -45,7 +45,7 @@ function saveLoginSuccess($secretKey) {
 function generateCookieValue($username, $secretKey) {
 	$key = bin2hex($secretKey);
 
-	$encrypted = encrypt($username, $key, 'aes-256-ecb');
+	$encrypted = encrypt($username, $key, 'aes-256-cbc');
 	return $encrypted;
 }
 
@@ -62,6 +62,6 @@ function decodeCookie($secretKey) {
 	$cookie_expiry = time() + (30 * 24 * 60 * 60);
 	setcookie(COOKIE_NAME, $encoded_cookie_value, $cookie_expiry);
 
-	$decrypted = decrypt($encoded_cookie_value, $key, 'aes-256-ecb');
+	$decrypted = decrypt($encoded_cookie_value, $key, 'aes-256-cbc');
 	return $decrypted;
 }

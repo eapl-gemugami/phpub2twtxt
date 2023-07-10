@@ -10,6 +10,7 @@ function verifyTOTP($secret, $enteredCode, $digits = 6, $window = 1) {
 		$timeShift = $i * $windowTime;
 		$time = $timeSlice + $timeShift;
 		$generatedCode = generateTOTP($secret, $digits, $time);
+		#echo $generatedCode . "\n<br>";
 
 		if ($generatedCode === $enteredCode) {
 			return true; // Code is valid within the window

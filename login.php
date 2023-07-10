@@ -22,7 +22,6 @@ if (isset($_POST['totp'])) {
 	$topt = $_POST['totp'];
 
 	$isCodeValid = verifyTOTP($config['totp_secret'], $topt, intval($config['totp_digits']));
-
 	// TODO: Add checks to avoid Brute force attacks by IP or similar
 
 	if ($isCodeValid) {
@@ -47,9 +46,9 @@ if (isset($_POST['totp'])) {
 	<h1><a href=".">twtxt</a></h1>
 	<form method="POST" class="column">
 		<div id="login">
-			<?php if ($invalidCode) { ?>
-				<div class="alert">Password is invalid, try again!</div><br>
-			<?php } ?>
+<?php if ($invalidCode) { ?>
+			<div class="alert">Password is invalid, try again!</div><br>
+<?php } ?>
 			<label for="fname">One Time Password (TOTP)</label>
 			<br>
   		<input type="text" id="totp" name="totp" class="input" autocomplete="off"><br>

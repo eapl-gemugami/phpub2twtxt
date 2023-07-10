@@ -5,7 +5,7 @@ Forked from phpup2twt for a more complete interface to write, read and reply to 
 
 [Insert a screenshot here]
 
-Tested with PHP 7.2.32
+Tested with PHP 7.3.33
 
 ## Setup and use
 

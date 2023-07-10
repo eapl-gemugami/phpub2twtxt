@@ -4,6 +4,12 @@ $secret_key = $config['totp_secret'];
 
 const COOKIE_NAME = 'remember_user';
 
+/*
+if (version_compare(phpversion(), '7.3.0', '<')) {
+	# Add this check for PHP 7.3
+}
+*/
+
 session_start([
 	'name' => 'twtxt_session',
 	'use_strict_mode' => true,
@@ -39,7 +45,12 @@ function saveLoginSuccess($secretKey) {
 	// Set a cookie value to remember the user
 	$cookie_value = generateCookieValue('admin', $secretKey);
 	$cookie_expiry = time() + (30 * 24 * 60 * 60); // 30 days
-	setcookie(COOKIE_NAME, $cookie_value, $cookie_expiry);
+	setcookie(COOKIE_NAME, $encoded_cookie_value, [
+    'expires' => $cookie_expiry,
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'Strict',
+	]);
 }
 
 function generateCookieValue($username, $secretKey) {
@@ -60,7 +71,12 @@ function decodeCookie($secretKey) {
 
 	// Extend expiry by 30 days
 	$cookie_expiry = time() + (30 * 24 * 60 * 60);
-	setcookie(COOKIE_NAME, $encoded_cookie_value, $cookie_expiry);
+	setcookie(COOKIE_NAME, $encoded_cookie_value, [
+    'expires' => $cookie_expiry,
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'Strict',
+	]);
 
 	$decrypted = decrypt($encoded_cookie_value, $key, 'aes-256-cbc');
 	return $decrypted;

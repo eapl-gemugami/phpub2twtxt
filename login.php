@@ -3,11 +3,14 @@ require_once('session.php');
 
 require_once('libs/TOTP.php');
 $config = parse_ini_file('.config');
+$secretKey = $config['totp_secret'];
 
 if (isset($_SESSION['valid_session']))  {
 	header('Location: .');
 	exit();
 }
+
+$invalidCode = $_GET['invalid'] ?? false;
 
 if (isset($_POST['totp'])) {
 	$topt = $_POST['totp'];
@@ -18,11 +21,11 @@ if (isset($_POST['totp'])) {
 
 	if ($isCodeValid) {
 		// Based on: https://shiflett.org/articles/session-fixation
-		$_SESSION['valid_session'] = true;
+		saveLoginSuccess($secretKey);
 		header('Location: .');
 		exit();
 	} else {
-		$invalidCode = true;
+		header('Location: login.php?invalid=1');
 	}
 }
 ?>
@@ -38,7 +41,7 @@ if (isset($_POST['totp'])) {
 	<h1><a href=".">twtxt</a></h1>
 	<form method="POST" class="column">
 		<div id="login">
-			<?php if (isset($invalidCode)) { ?>
+			<?php if ($invalidCode) { ?>
 				<div class="alert">Password is invalid, try again!</div><br>
 			<?php } ?>
 			<label for="fname">One Time Password (TOTP)</label>

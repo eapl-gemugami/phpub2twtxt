@@ -1,11 +1,11 @@
 {
 	"short_name": "twtxt",
 	"name": "twtxt",
-	"description": "twtxt web interface to upload status",
+	"description": "twtxt web interface",
 	"display": "standalone",
 	"theme_color": "#132e4d",
 	"background_color": "#132e4d",
-	"start_url": "index.html",
+	"start_url": "index.php",
 	"icons": [
 		{
 			"src": "img/icon-512x512.png",

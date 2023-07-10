@@ -1,40 +1,67 @@
 <?php
-const COOKIE_LIFETIME = 7 * 24 * 60 * 60; // 7 days * 24 hours * 60 minutes * 60 seconds
-const GARBAGE_COLLECTOR_LIFETIME = 10 * 24 * 60 * 60; // 10 days * 24 hours * 60 minutes * 60 seconds
-const TIME_TO_REFRESH_SESSION = 1 * 60 * 60; // 1 hour * 60 minutes * 60 seconds
+$config = parse_ini_file('.config');
+$secret_key = $config['totp_secret'];
+
+const COOKIE_NAME = 'remember_user';
 
 session_start([
-	'name' => 'twtxt',
+	'name' => 'twtxt_session',
 	'use_strict_mode' => true,
 	'cookie_httponly' => true,
 	'cookie_secure' => true,
-	'cookie_lifetime' => COOKIE_LIFETIME,
-	'gc_maxlifetime' => GARBAGE_COLLECTOR_LIFETIME,
 	'sid_length' => 64,
 	'sid_bits_per_character' => 6,
-	'cookie_samesite' => 'Strict', // Not compatible with PHP lower than 7.3
-	// TODO: Move this to config
-	'save_path' => '/var/lib/php/sessions/twtxt'
+	//'cookie_samesite' => 'Strict', // Not compatible with PHP lower than 7.3
 ]);
 
-if (isset($_SESSION['valid_session'])) {
-	// Check if the session is new or expired
-	if (!isset($_SESSION['last_activity'])
-			|| (time() - $_SESSION['last_activity']) > TIME_TO_REFRESH_SESSION) {
-		// If the session is new or expired, refresh the session ID
-		// TODO: Implement improvements to regenerate
-		// https://www.php.net/manual/en/function.session-regenerate-id.php
-		// https://stackoverflow.com/questions/1236374/session-timeouts-in-php-best-practices
-		session_regenerate_id(true);
+function encrypt(string $data, string $key, string $method): string {
+	$ivSize = openssl_cipher_iv_length($method);
+	$iv = openssl_random_pseudo_bytes($ivSize);
+	$encrypted = openssl_encrypt($data, $method, $key, OPENSSL_RAW_DATA, $iv);
+	$encrypted = strtoupper(implode(null, unpack('H*', $encrypted)));
 
-		// Update the session last activity timestamp
-		$_SESSION['last_activity'] = time();
-		$_SESSION['valid_session'] = true;
-	}
+	return $encrypted;
 }
 
-// Cookie samesite (For PHP <7.3)
-// https://stackoverflow.com/questions/39750906/php-setcookie-samesite-strict
+function decrypt(string $data, string $key, string $method): string {
+	$data = pack('H*', $data);
+	$ivSize = openssl_cipher_iv_length($method);
+	$iv = openssl_random_pseudo_bytes($ivSize);
+	$decrypted = openssl_decrypt($data, $method, $key, OPENSSL_RAW_DATA, $iv);
 
-// Add CSRF protection like on
-// https://hg.sr.ht/~m15o/mebo/browse/classes/Session.php?rev=tip
+	return trim($decrypted);
+}
+
+function saveLoginSuccess($secretKey) {
+	// Set a cookie to remember the user
+	$_SESSION['valid_session'] = true;
+
+	// Set a cookie value to remember the user
+	$cookie_value = generateCookieValue('admin', $secretKey);
+	$cookie_expiry = time() + (30 * 24 * 60 * 60); // 30 days
+	setcookie(COOKIE_NAME, $cookie_value, $cookie_expiry);
+}
+
+function generateCookieValue($username, $secretKey) {
+	$key = bin2hex($secretKey);
+
+	$encrypted = encrypt($username, $key, 'aes-256-ecb');
+	return $encrypted;
+}
+
+function decodeCookie($secretKey) {
+	// Retrieve the encoded cookie name
+	if (!isset($_COOKIE[COOKIE_NAME])) {
+		return false;
+	}
+
+	$encoded_cookie_value = $_COOKIE[COOKIE_NAME];
+	$key = bin2hex($secretKey);
+
+	// Extend expiry by 30 days
+	$cookie_expiry = time() + (30 * 24 * 60 * 60);
+	setcookie(COOKIE_NAME, $encoded_cookie_value, $cookie_expiry);
+
+	$decrypted = decrypt($encoded_cookie_value, $key, 'aes-256-ecb');
+	return $decrypted;
+}

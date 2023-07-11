@@ -21,8 +21,9 @@ if (!isset($_SESSION['valid_session']))  {
 
 	# Valid cookie ?
 	if ($cookieVal === false) {
+		#echo "Invalid cookie";
 		header('Location: login.php');
-	exit();
+		exit();
 	}
 }
 

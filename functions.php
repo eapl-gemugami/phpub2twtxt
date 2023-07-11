@@ -127,9 +127,6 @@ function replaceMentionsFromTwt(string $twtString): string {
 
 function replaceLinksFromTwt(string $twtString) {
 	// Regular expression pattern to match URLs
-	// This expresion was not working for https://youtu.be/ysaNUatLMn0
-	//$pattern = '/(?<!\S)(\b(https?|ftp|gemini|spartan|gopher):\/\/\S+|\S+\.\S+\.\S+)(?!\S)/';
-	//$pattern = '/(?<!\S)((?:https?|ftp|gemini|spartan|gopher):\/\/\S+|(?:\S+\.)+\S+)(?!\S)/';
 	$pattern = '/(?<!\S)(\b(https?|ftp|gemini):\/\/\S+|\b(?!:\/\/)\w+(?:\.\w+)+(?:\/\S*)?)(?!\S)/';
 
 	// Replace URLs with clickable links
@@ -217,7 +214,7 @@ function updateCachedFile($filePath, $cacheDurationSecs = 15) {
 	}
 
 	if ($fileDoesntExist || $fileIsOld) {
-		#echo "Loading Cached file $cacheFilePath\n<br>";
+		#echo "Loading Cached file $cacheFilePath<br>\n";
 		$contents = @file_get_contents($filePath);
 
 		if ($contents === false) {
@@ -291,13 +288,12 @@ function getTwtsFromTwtxtString($url) {
 				// Replace the Line separator character (U+2028)
 				// \u2028 is \xE2 \x80 \xA8 in UTF-8
 				// Check here: https://www.mclean.net.nz/ucf/
-				//$twtContent = str_replace("\xE2\x80\xA8", "\n<br>", $twtContent);
+				//$twtContent = str_replace("\xE2\x80\xA8", "<br>\n", $twtContent);
 
 				// For some reason I was having trouble finding this nomenclature
 				// that's why I leave the UTF-8 representation for future reference
-				$twtContent = str_replace("\u{2028}", "\n<br>", $twtContent);
+				$twtContent = str_replace("\u{2028}", "<br>\n", $twtContent);
 				$twtContent = replaceLinksFromTwt($twtContent);
-
 
 				// Get and remote the hash
 				$hash = getReplyHashFromTwt($twtContent);

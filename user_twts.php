@@ -89,7 +89,7 @@ foreach ($fileLines as $currentLine) {
 			// Replace the Line separator character (U+2028)
 			// \u2028 is \xE2 \x80 \xA8 in UTF-8
 			// Check here: https://www.mclean.net.nz/ucf/
-			$twtContent = str_replace("\xE2\x80\xA8", "\n<br>", $twtContent);
+			$twtContent = str_replace("\xE2\x80\xA8", "<br>\n", $twtContent);
 
 			// Get and remote the hash
 			$hash = getReplyHashFromTwt($twtContent);

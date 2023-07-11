@@ -20,7 +20,7 @@ if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 	die('Not a valid URL');
 }
 
-#echo "Loading URL: $url\n<br>\n<br>";
+#echo "Loading URL: $url<br>\n<br>\n";
 #ob_flush();
 
 const DEBUG_TIME_SECS = 300;
@@ -42,7 +42,7 @@ foreach ($fileLines as $currentLine) {
 # Load all the files
 # Save a flag to know it's loading files in the background
 foreach ($twtFollowingList as $following) {
-	#echo "Updating: $following[1]\n<br>";
+	#echo "Updating: $following[1]<br>\n";
 	#ob_flush();
 	updateCachedFile($following[1]);
 }

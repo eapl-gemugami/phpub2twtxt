@@ -339,6 +339,22 @@ function getTwtsFromTwtxtString($url) {
 	return $twtxtData;
 }
 
+function insertFollowingURL($urlString) {
+	// Check if it's a valid URL
+	// Retrieve the nickname, if didn't find a nick, ask for one
+
+	$originalCode = '
+	Lorem ipsum dolor sit amet,
+	#~~~#
+	consectetur adipiscing elit.';
+
+	$text = '#~~~#';
+	$newText = '123' . PHP_EOL . $text;
+	$result = str_replace('#~~~#', $newText, $originalCode);
+
+	echo $result;
+}
+
 function getCachedFileName($filePath) {
 	return __DIR__ . '/cache/' . hash('sha256', $filePath);
 }

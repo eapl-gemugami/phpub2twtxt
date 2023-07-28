@@ -1,3 +1,8 @@
+Current version: 2023-06-29
+
+Derived from: https://git.mills.io/yarnsocial/yarn/src/branch/main/docs/_posts/2020-12-11-twthashextension.md
+Version: 2020-12-11
+
 ---
 
 At [twtxt.net](https://twtxt.net/) the **Twt Hash** was invented as an
@@ -154,7 +159,7 @@ const hash = base32(blake2b256(payload)).toLowerCase().slice(-7);
 
 ### PHP 7.2
 ```php
-$twtString =
+$twtString = "2023-07-06T12:28:31-06:00\tHello twtxt world!";
 $explodedLine = explode("\t", $twtString);
 
 if (count($explodedLine) >= 2) {
@@ -177,11 +182,8 @@ if (count($explodedLine) >= 2) {
 	$hashStr = substr(Base32::encode($hashBytes), -7);
 
 	echo $hashStr;
+} else {
+	echo 'Invalid twt';
 }
 
-echo 'Invalid twt';
 ```
-
-Current version: 2023-06-29
-Derived from: https://git.mills.io/yarnsocial/yarn/src/branch/main/docs/_posts/2020-12-11-twthashextension.md
-Version: 2020-12-11

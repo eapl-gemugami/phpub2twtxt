@@ -70,6 +70,7 @@ function getSingleParameter($keyToFind, $string) {
 }
 
 function getDoubleParameter($keywordToFind, $string) {
+	// Returns string or null
 	$pattern = '/#\s*' . preg_quote($keywordToFind, '/') . '\s*=\s*(\S+)\s*(\S+)/';
 	// Matches "# <keyword> = <value> <value>"
 	preg_match($pattern, $string, $matches);
@@ -131,6 +132,23 @@ function replaceLinksFromTwt(string $twtString) {
 
 	// Replace URLs with clickable links
 	$replacement = '<a href="$1">$1</a>';
+	$result = preg_replace($pattern, $replacement, $twtString);
+
+	return $result;
+}
+
+function replaceMarkdownLinksFromTwt(string $twtString) {
+	$pattern = '/\[([^\]]+)\]\(([^)]+)\)/';
+
+	$replacement = '<a href="$2">$1</a>';
+	$result = preg_replace($pattern, $replacement, $twtString);
+
+	return $result;
+}
+
+function replaceImagesFromTwt(string $twtString) {
+	$pattern = '/!\[(.*?)\]\((.*?)\)/';
+	$replacement = '<img src="$2" alt="$1">';
 	$result = preg_replace($pattern, $replacement, $twtString);
 
 	return $result;
@@ -294,6 +312,8 @@ function getTwtsFromTwtxtString($url) {
 				// that's why I leave the UTF-8 representation for future reference
 				$twtContent = str_replace("\u{2028}", "<br>\n", $twtContent);
 				$twtContent = replaceLinksFromTwt($twtContent);
+				$twtContent = replaceImagesFromTwt($twtContent);
+				$twtContent = replaceMarkdownLinksFromTwt($twtContent);
 
 				// Get and remote the hash
 				$hash = getReplyHashFromTwt($twtContent);

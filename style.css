@@ -3,9 +3,9 @@ body {
 	color: #eee;
 	font-family: monospace;
 	max-width: 100ch;
-	padding: 0em 2em;
+	padding: 0em 3em;
   margin: auto;
-  line-height: 1.25;
+  line-height: 1.75;
   font-size: 1.25em;
 }
 
@@ -13,6 +13,7 @@ a {
 	color: #fff;
 	text-decoration: none;
 	font-weight: bold;
+
 }
 
 a:hover {
@@ -46,6 +47,12 @@ blockquote {
 	padding-left: 16px;
 	line-height: 1.6;
 	margin: 24px 0;
+}
+
+img {
+	object-fit: contain;
+	max-width: 100%;
+	height: auto;
 }
 
 img.rounded {

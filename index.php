@@ -23,6 +23,9 @@ require_once('hash.php');
 
 const TWTS_PER_PAGE = 50;
 
+// TODO: Move twts per page to .config
+// Add a fallback if the number is invalid (it should be between 1 and 999)
+
 $config = parse_ini_file('.config');
 $url = $config['public_txt_url'];
 
@@ -116,7 +119,7 @@ $twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 <body>
 	<h1><a href=".">twtxt</a></h1>
 <?php if(!empty($_GET['twts'])) { ?>
-	<h2>Twts for <a href="<?= $url ?>"><?= $url ?></a></h2>
+	<h2>Twts for <a href="<?= $twtsURL ?>"><?= $twtsURL ?></a></h2>
 <?php } else { ?>
 	<h2>Timeline for <a href="<?= $url ?>"><?= $url ?></a></h2>
 <?php } ?>

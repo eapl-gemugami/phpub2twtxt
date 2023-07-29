@@ -6,6 +6,12 @@
 ; true or false
 debug_mode = false
 
+; Time to wait before reloading URLs
+refresh_time = 15
+
+; Max execution time to avoid running to the infinite
+max_execution_time = 300
+
 ; Check that your current user has permissions for this file
 ; Check also the user owner is correct, www-data for instance
 txt_file_path = "/var/www/html/twtxt.txt"

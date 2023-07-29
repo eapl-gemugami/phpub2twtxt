@@ -16,7 +16,6 @@ declare(strict_types=1);
 #
 # hash(string) =
 #
-#
 
 require_once('session.php');
 require_once('functions.php');
@@ -37,27 +36,38 @@ if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 	die('Not a valid URL');
 }
 
-const DEBUG_TIME_SECS = 300;
-const PRODUCTION_TIME_SECS = 15;
-$fileContent = getCachedFileContentsOrUpdate($url, PRODUCTION_TIME_SECS);
+$cacheRefreshTime = $config['cache_refresh_time'];
+$fileContent = getCachedFileContentsOrUpdate($url, $cacheRefreshTime);
 $fileContent = mb_convert_encoding($fileContent, 'UTF-8');
 
 $fileLines = explode("\n", $fileContent);
 
-$parsedTwtxtFiles = [];
-
 $twtFollowingList = [];
-foreach ($fileLines as $currentLine) {
-	if (str_starts_with($currentLine, '#')) {
-		if (!is_null(getDoubleParameter('follow', $currentLine))) {
-			$follow = getDoubleParameter('follow', $currentLine);
-			$twtFollowingList[] = $follow;
 
-			// Read the parsed files if in Cache
-			$followURL = $follow[1];
-			$parsedTwtxtFile = getTwtsFromTwtxtString($followURL);
-			if (!is_null($parsedTwtxtFile)) {
-				$parsedTwtxtFiles[$parsedTwtxtFile->mainURL] = $parsedTwtxtFile;
+if (!empty($_GET['twts'])) { // Show twts for some user
+	$twtsURL = $_GET['twts'];
+	if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+		die('Not a valid URL');
+	}
+
+	$parsedTwtxtFile = getTwtsFromTwtxtString($twtsURL);
+	if (!is_null($parsedTwtxtFile)) {
+		$parsedTwtxtFiles[$parsedTwtxtFile->mainURL] = $parsedTwtxtFile;
+	}
+} else { // Show timeline for the URL
+	$parsedTwtxtFiles = [];
+	foreach ($fileLines as $currentLine) {
+		if (str_starts_with($currentLine, '#')) {
+			if (!is_null(getDoubleParameter('follow', $currentLine))) {
+				$follow = getDoubleParameter('follow', $currentLine);
+				$twtFollowingList[] = $follow;
+
+				// Read the parsed files if in Cache
+				$followURL = $follow[1];
+				$parsedTwtxtFile = getTwtsFromTwtxtString($followURL);
+				if (!is_null($parsedTwtxtFile)) {
+					$parsedTwtxtFiles[$parsedTwtxtFile->mainURL] = $parsedTwtxtFile;
+				}
 			}
 		}
 	}
@@ -105,9 +115,13 @@ $twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 </head>
 <body>
 	<h1><a href=".">twtxt</a></h1>
+<?php if(!empty($_GET['twts'])) { ?>
+	<h2>Twts for <a href="<?= $url ?>"><?= $url ?></a></h2>
+<?php } else { ?>
 	<h2>Timeline for <a href="<?= $url ?>"><?= $url ?></a></h2>
-	<h3><a href="load_twt_files.php?url=<?= $url ?>">Reload timeline</a></h3>
-	<h3><a href="new_twt.php">Write a new twt</a></h3>
+<?php } ?>
+	<h3><a href="load_twt_files.php?url=<?= $url ?>">🔄 Refresh timeline</a></h3>
+	<h3><a href="new_twt.php">✍️ New twt</a></h3>
 	<details><summary>Following: <?php echo count($twtFollowingList); ?></summary>
     <?php foreach ($twtFollowingList as $currentFollower) { ?>
 	<p>
@@ -118,23 +132,32 @@ $twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 	<hr>
 <?php foreach ($twts as $twt) { ?>
 	<p>
-		<img src='<?= $twt->avatar ?>' class="rounded" onerror="this.onerror=null;this.src='imgs/image_not_found.png';">
-		<strong><span title="<?= $twt->mainURL ?>"><?= $twt->nick ?></span></strong>
-		<a href='?hash=<?= $twt->hash ?>'><span title="<?= $twt->fullDate ?> "><?= $twt->displayDate ?></span></a>
+		<a href="?twts=<?= $twt->mainURL ?>">
+			<img src='<?= $twt->avatar ?>' class="rounded"
+				onerror="this.onerror=null;this.src='imgs/image_not_found.png';"></a>
+		<a href="?twts=<?= $twt->mainURL ?>"><span title="<?= $twt->mainURL ?>">
+			<strong><?= $twt->nick ?></strong></span></a>
+	<?php if($twt->replyToHash) { ?>
 		<br>
-<?php if($twt->replyToHash) { ?>
-		<em>Reply to thread <a href="?hash=<?= $twt->replyToHash?>"><?= $twt->replyToHash?></a></em><br>
-<?php } ?>
+		<em>Reply to <a href="?hash=<?= $twt->replyToHash?>">#<?= $twt->replyToHash?></a></em>
+	<?php } ?>
+		<br>
 		<?= $twt->content ?>
 		<?php foreach ($twt->mentions as $mention) { ?>
 			<br><?= $mention['nick'] ?>(<?= $mention['url'] ?>)
 		<?php } ?>
 		<br>
-		<a href="new_twt.php?hash=<?= $twt->hash ?>">Reply</a>
+		<a href='?hash=<?= $twt->hash ?>'><span title="<?= $twt->fullDate ?> "><?= $twt->displayDate ?></span></a>
+
+		<br>
+		<a href="new_twt.php?hash=<?= $twt->hash ?>">💬 Reply</a>
 	</p>
 	<br>
 <?php } ?>
-	<div><a href="?page=<?= $page + 1 ?>">Next</a></div>
-	<footer><hr><a href="https://github.com/eapl-gemugami/phpub2twtxt">source code</a></footer>
+	<div><a href="?page=<?= $page + 1 ?>">⏭️ Next</a></div>
+	<footer>
+		<hr>
+		<a href="https://github.com/eapl-gemugami/phpub2twtxt">👨‍💻 source code</a>
+	</footer>
 </body>
 </html>

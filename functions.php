@@ -128,7 +128,7 @@ function replaceMentionsFromTwt(string $twtString): string {
 
 function replaceLinksFromTwt(string $twtString) {
 	// Regular expression pattern to match URLs
-	$pattern = '/(?<!\S)(\b(https?|ftp|gemini):\/\/\S+|\b(?!:\/\/)\w+(?:\.\w+)+(?:\/\S*)?)(?!\S)/';
+	$pattern = '/(?<!\S)(\b(https?|ftp|gemini|spartan|gopher):\/\/\S+|\b(?!:\/\/)\w+(?:\.\w+)+(?:\/\S+)?)(?!\S)/';
 
 	// Replace URLs with clickable links
 	$replacement = '<a href="$1">$1</a>';
@@ -310,7 +310,7 @@ function getTwtsFromTwtxtString($url) {
 
 				// For some reason I was having trouble finding this nomenclature
 				// that's why I leave the UTF-8 representation for future reference
-				$twtContent = str_replace("\u{2028}", "<br>\n", $twtContent);
+				$twtContent = str_replace("\u{2028}", "\n<br>\n", $twtContent);
 				$twtContent = replaceLinksFromTwt($twtContent);
 				$twtContent = replaceImagesFromTwt($twtContent);
 				$twtContent = replaceMarkdownLinksFromTwt($twtContent);

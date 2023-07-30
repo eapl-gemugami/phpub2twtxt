@@ -1,39 +1,36 @@
 # phpub2twtxt - twtxt-php
+
+Forked from phpup2twt
+
+Will be renamed to `twtxt-php` and moved to a new repo soon
+
 A PHP web interface to publish your microblogging in twtxt format [twtxt.txt](https://github.com/buckket/twtxt)
-
-Forked from phpup2twt for a more complete interface to write, read and reply to twts.
-
-[Insert a screenshot here]
 
 Tested with PHP 7.3.33
 
-## Setup and use
+![A preview](imgs/twtxt-php_2023-07-30.png)
 
-1. Upload the files to your Web Server, or clone this project from Git.
-	- I'd recommend domain.com/twtxt/
+By [@eapl.me](https://eapl.me/twtxt/)
 
-2. Copy .config.sample to .config and edit the file
-	- Add the absolute path of your twtxt.txt file in your file system, and the public URL
+## Goals
+* Make it extremely easy to self-host a twtxt Web interface on a VPS or PHP shared-server
+* Offer a personal Web instance to write new twts, read your timeline, follow people and reply.
+  One instance for each twtxt account/file (or perhaps multi-account in the future)
+* Compatible with Gemtext, and perhaps in the future with Gemini servers. (Station alike)
 
-3. Navigate to domain.com/twtxt/index.php (or equivalent) in your web browser and start microblogging
+## twtxt Specification and Extensions
+[twtxt file spec](docs/01-twtxtfile.md)
 
-4. Tell the world to check out your awesome micro-blog at www.yourdomain.net/twtxt.txt
+[Metadata extension](docs/02-metadata-extension.md)
 
-## WARNING!
+[Hash extension](docs/03-hash-extension.md)
 
-**Use of this software is totally at one's own risk!!!**
+[Extension references](docs/00-twtxt_extensions_refs.md)
 
-## Ideas
+## Setup
+TBD
 
-# Meta
-Code based on [register-with-txt by Gabriel de Jesus](https://github.com/gabrieldejesus/register-with-txt) and [pbpush by Luqaska](https://github.com/Luqaska/pbpush)
+[README.md from original phpup2twt](README_old.md)
 
-Done with bits of PHP to make it write just one line of twtxt-compliant data at a time.
-
-Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
-
-# Required extensions in PHP.ini
-curl
-openssl
-pdo_sqlite
-sodium
+## Development To Do
+[TODO.md](TODO.md)

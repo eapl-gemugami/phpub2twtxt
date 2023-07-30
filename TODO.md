@@ -1,26 +1,36 @@
 # TO DO
 ## Must Have
-- [ ] Sort your follower list by last twt (and show that in the list)
-## Should have
-- [ ] Implement long Session cookie time (to 7 days) refreshing when it's used
+- [ ] Follow and Stop following URLs
 - [ ] Fix Login redirection with Post-Redirect-Get
+- [X] Parse mentions like @<~duriny https://envs.net/~duriny/twtxt.txt>
+
+## Should have
+- [ ] Fork the project to `twtxt-php` repository
+- [ ] Switch the project from Github to some service more friendly to FOSS ?
 - [ ] Allow only a login every 3 seconds
 - [ ] Check that the Twtxt URLs are valid (by regex or ping)
-- [ ] Fix error for following list with Mastodon accounts
+- [ ] Fix error for following list with Mastodon accounts (on Yarn.social twtxt)
 - [ ] Implement discover_url = to know where to inform for followers
 - [ ] Implement discover PHP to receive suscriptions
-- [/] Show a default avatar for .txts w/o avatar URL
-- [/] Get Menctions @<~duriny https://envs.net/~duriny/twtxt.txt>
+
 ## Nice to have
-- [ ] Support markdown or gemtext
-- [ ] Support images
-- [ ] Implement RSS for followers and your timeline
+- [/] Support markdown or gemtext -> Currently supports images and links
+- [ ] Chat view - Sort your follower list by last twt (and show that in the list)
+      like [Mastodon Treed](https://dzwdz.github.io/treed/client.html) does
+- [ ] Implement RSS for main timeline
 - [ ] Check replies from your followers to know if someone replied to you
 - [ ] Auto-anounce that you've replied
 - [ ] Add a URL router for fancy URLs
 - [ ] Decide if we allow Selfsigned certificates
+- [ ] Support for Gemini URLs
 
-# Done
+## Done (Sorted by implementation date)
+- [X] Show a default avatar for .txts w/o avatar URL
+- [X] Updated documentation more friendly to final users
+- [X] Added emojis
+- [X] Support Markdown images
+- [X] Add a view for User twts (when you click on their avatar or nick)
+- [X] Implement long Session cookie time (to 7 days) refreshing when it's used
 - [X] Get Thread hashes (#m443x2q)
 - [X] Cache reads to avoid retreiving same file many times
 - [X] Read all the twts from your followers
@@ -33,6 +43,6 @@
 - [X] Cache the last twts from your followers
 - [X] Sort all the 'timeline' by date
 - [X] Write to your .txt file
-- [X] Read a twtxt file from an URL
+- [X] Read a twtxt file from an URL (HTTP)
 - [X] Read meta from .txt file (Test if it works for edge cases)
-- [X] Get twt Hash
+- [X] Get twt Hash (based on yarn.social spec)

@@ -14,6 +14,9 @@ max_execution_time = 300
 
 ; Check that your current user has permissions for this file
 ; Check also the user owner is correct, www-data for instance
+; TODO: Implement a way to know we have access to this file
+; since there are many different conditions for not having
+; access.
 txt_file_path = "/var/www/html/twtxt.txt"
 
 ; Full URL for your public twtxt.txt file

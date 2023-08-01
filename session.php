@@ -18,6 +18,7 @@ session_start([
 	'cookie_secure' => true,
 	'sid_length' => 64,
 	'sid_bits_per_character' => 6,
+	'save_path' => $config['session_path'],
 	'cookie_samesite' => 'Strict', // Not compatible with PHP lower than 7.3
 ]);
 

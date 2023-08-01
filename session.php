@@ -50,6 +50,8 @@ function saveLoginSuccess($secretKey) {
 	$encoded_cookie_value = generateCookieValue('admin', $secretKey);
 	$cookie_expiry = time() + (30 * 24 * 60 * 60); // 30 days
 
+	$config = parse_ini_file('.config');
+
 	setcookie(COOKIE_NAME, $encoded_cookie_value, [
     'expires' => $cookie_expiry,
     'secure' => $config['secure_cookies'],
@@ -73,6 +75,8 @@ function decodeCookie($secretKey) {
 
 	$encoded_cookie_value = $_COOKIE[COOKIE_NAME];
 	$key = bin2hex($secretKey);
+
+	$config = parse_ini_file('.config');
 
 	// Extend expiry by 30 days
 	$cookie_expiry = time() + (30 * 24 * 60 * 60);

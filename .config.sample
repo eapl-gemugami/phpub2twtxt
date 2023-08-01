@@ -7,7 +7,7 @@
 debug_mode = false
 
 ; Time to wait before reloading URLs
-refresh_time = 15
+cache_refresh_time = 15
 
 ; Max execution time to avoid running to the infinite
 max_execution_time = 300

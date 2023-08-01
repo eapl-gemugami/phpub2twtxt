@@ -28,4 +28,6 @@ timezone = "UTC"
 totp_digits = 10
 totp_secret = ""
 
-session_path = "/var/lib/php/sessions/twtxt"
+; It's recommended that your site is hosted on HTTPS
+; In case it's in HTTP (not secure), set this to false
+secure_cookies = true

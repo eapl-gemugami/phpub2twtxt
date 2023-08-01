@@ -15,10 +15,9 @@ session_start([
 	'name' => 'twtxt_session',
 	'use_strict_mode' => true,
 	'cookie_httponly' => true,
-	//'cookie_secure' => true,
+	'cookie_secure' => $config['secure_cookies'],
 	'sid_length' => 64,
 	'sid_bits_per_character' => 6,
-	'save_path' => $config['session_path'],
 	'cookie_samesite' => 'Strict', // Not compatible with PHP lower than 7.3
 ]);
 
@@ -53,7 +52,7 @@ function saveLoginSuccess($secretKey) {
 
 	setcookie(COOKIE_NAME, $encoded_cookie_value, [
     'expires' => $cookie_expiry,
-    //'secure' => true,
+    'secure' => $config['secure_cookies'],
     'httponly' => true,
     'samesite' => 'Strict',
 	]);
@@ -79,7 +78,7 @@ function decodeCookie($secretKey) {
 	$cookie_expiry = time() + (30 * 24 * 60 * 60);
 	setcookie(COOKIE_NAME, $encoded_cookie_value, [
     'expires' => $cookie_expiry,
-    'secure' => true,
+    'secure' => $config['secure_cookies'],
     'httponly' => true,
     'samesite' => 'Strict',
 	]);

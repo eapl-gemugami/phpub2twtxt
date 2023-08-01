@@ -5,7 +5,14 @@ require_once('session.php');
 require_once('functions.php');
 require_once('hash.php');
 
-ini_set('max_execution_time', '600');
+$config = parse_ini_file('.config');
+
+$max_execution_time = intval($config['max_execution_time']);
+if ($max_execution_time < 1) {
+	$max_execution_time = 1;
+}
+
+ini_set('max_execution_time', $max_execution_time);
 
 #ob_start();
 

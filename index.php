@@ -41,6 +41,10 @@ if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 
 $cacheRefreshTime = $config['cache_refresh_time'];
 $fileContent = getCachedFileContentsOrUpdate($url, $cacheRefreshTime);
+
+if ($fileContent === false) {
+	die("$url couldn't be retrieved.");
+}
 $fileContent = mb_convert_encoding($fileContent, 'UTF-8');
 
 $fileLines = explode("\n", $fileContent);

@@ -119,7 +119,7 @@ $twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 	<title>twtxt</title>
 	<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css">
-	<link rel="manifest" href="manifest.json">
+	<link rel="manifest" href="site.webmanifest">
 </head>
 <body>
 	<h1><a href=".">twtxt</a></h1>

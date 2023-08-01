@@ -53,7 +53,7 @@ function saveLoginSuccess($secretKey) {
 
 	setcookie(COOKIE_NAME, $encoded_cookie_value, [
     'expires' => $cookie_expiry,
-    'secure' => true,
+    //'secure' => true,
     'httponly' => true,
     'samesite' => 'Strict',
 	]);

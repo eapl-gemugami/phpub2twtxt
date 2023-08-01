@@ -25,7 +25,10 @@ function encrypt(string $data, string $key, string $method): string {
 	$ivSize = openssl_cipher_iv_length($method);
 	$iv = openssl_random_pseudo_bytes($ivSize);
 	$encrypted = openssl_encrypt($data, $method, $key, OPENSSL_RAW_DATA, $iv);
-	$encrypted = strtoupper(implode(null, unpack('H*', $encrypted)));
+	# PHP 8.2 - Deprecated: implode():
+	# Passing null to parameter #1 ($separator) of type array|string is deprecated
+	//$encrypted = strtoupper(implode(null, unpack('H*', $encrypted)));
+	$encrypted = strtoupper(implode(unpack('H*', $encrypted)));
 
 	return $encrypted;
 }

@@ -15,7 +15,7 @@ session_start([
 	'name' => 'twtxt_session',
 	'use_strict_mode' => true,
 	'cookie_httponly' => true,
-	'cookie_secure' => true,
+	//'cookie_secure' => true,
 	'sid_length' => 64,
 	'sid_bits_per_character' => 6,
 	'save_path' => $config['session_path'],

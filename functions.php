@@ -174,8 +174,10 @@ function getTimeElapsedString($timestamp, $full = false) {
 
 	$diff = $now->diff($ago);
 
-	$diff->w = floor($diff->d / 7);
-	$diff->d -= $diff->w * 7;
+	//$diff->w = floor($diff->d / 7);
+	$w = floor($diff->d / 7);
+	$d = $diff->d - ($w * 7);
+	//$diff->d -= $diff->w * 7;
 
 	$string = array(
 		'y' => 'year',
@@ -186,11 +188,19 @@ function getTimeElapsedString($timestamp, $full = false) {
 		'i' => 'minute',
 		's' => 'second',
 	);
-	foreach ($string as $k => &$v) {
-		if ($diff->$k) {
-			$v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+	foreach ($string as $k => &$v) { // k is key, and v is value... Obviously
+		if ($k === 'w') {
+			if ($w) {
+				$v = $w . ' ' . $v . ($w > 1 ? 's' : '');
+			} else {
+				unset($string[$k]);
+			}
 		} else {
-			unset($string[$k]);
+			if ($diff->$k) {
+				$v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+			} else {
+				unset($string[$k]);
+			}
 		}
 	}
 

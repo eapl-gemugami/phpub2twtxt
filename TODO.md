@@ -2,12 +2,13 @@
 ## Must Have
 - [ ] Follow and Stop following URLs
 - [ ] Fix Login redirection with Post-Redirect-Get
-- [X] Parse mentions like @<~duriny https://envs.net/~duriny/twtxt.txt>
 
 ## Should have
-- [ ] Fork the project to `twtxt-php` repository
+- [/] Parse mentions like @<~duriny https://envs.net/~duriny/twtxt.txt>
+- [ ] In the reply, select the language for the twt
+- [ ] In the reply, show the root message to make it easier to know what are replying to
 - [ ] Switch the project from Github to some service more friendly to FOSS ?
-- [ ] Allow only a login every 3 seconds
+- [ ] Allow a login only every 3 seconds
 - [ ] Check that the Twtxt URLs are valid (by regex or ping)
 - [ ] Fix error for following list with Mastodon accounts (on Yarn.social twtxt)
 - [ ] Implement discover_url = to know where to inform for followers
@@ -18,13 +19,15 @@
 - [ ] Chat view - Sort your follower list by last twt (and show that in the list)
       like [Mastodon Treed](https://dzwdz.github.io/treed/client.html) does
 - [ ] Implement RSS for main timeline
-- [ ] Check replies from your followers to know if someone replied to you
+- [ ] Check replies from your followers to know if someone replied to you (Like notifications)
 - [ ] Auto-anounce that you've replied
 - [ ] Add a URL router for fancy URLs
-- [ ] Decide if we allow Selfsigned certificates
+- [ ] Decide if we allow Selfsigned certificates and implement
 - [ ] Support for Gemini URLs
 
 ## Done (Sorted by implementation date)
+- [X] Fix Creation of dynamic property DateInterval::$w is deprecated on PHP 8.2 (functions.php)
+- [X] Fork the project to `twtxt-php` repository
 - [X] Show a default avatar for .txts w/o avatar URL
 - [X] Updated documentation more friendly to final users
 - [X] Added emojis

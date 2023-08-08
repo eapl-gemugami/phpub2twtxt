@@ -5,10 +5,12 @@
 
 ## Should have
 - [/] Parse mentions like @<~duriny https://envs.net/~duriny/twtxt.txt>
+- [/] Fix overflow if URLs on Edge
+- [ ] Remove trailing whitespace when writing new twts
 - [ ] In the reply, select the language for the twt
 - [ ] In the reply, show the root message to make it easier to know what are replying to
 - [ ] Switch the project from Github to some service more friendly to FOSS ?
-- [ ] Allow a login only every 3 seconds
+- [ ] Allow a login only every 3 seconds to avoid brute-forcing
 - [ ] Check that the Twtxt URLs are valid (by regex or ping)
 - [ ] Fix error for following list with Mastodon accounts (on Yarn.social twtxt)
 - [ ] Implement discover_url = to know where to inform for followers
@@ -16,6 +18,7 @@
 
 ## Nice to have
 - [/] Support markdown or gemtext -> Currently supports images and links
+- [ ] Implement a button to show replies with the count of found replies
 - [ ] Chat view - Sort your follower list by last twt (and show that in the list)
       like [Mastodon Treed](https://dzwdz.github.io/treed/client.html) does
 - [ ] Implement RSS for main timeline

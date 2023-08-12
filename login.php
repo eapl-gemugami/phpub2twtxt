@@ -55,7 +55,6 @@ if (isset($_POST['totp'])) {
 			<input type="submit" value="Login" class="btn">
 		</div>
 	</form>
-	</form>
 	<hr>
 </body>
 </html>

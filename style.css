@@ -48,10 +48,6 @@ pre {
 	margin: 0;
 }
 
-textarea {
-	height: 150px;
-}
-
 blockquote {
 	border-left: 2px solid #a4a4a4;
 	padding-left: 16px;
@@ -90,7 +86,6 @@ img.rounded {
 }
 
 .input {
-	/*float: left;*/
 	outline: none;
 	resize: none;
 	border: 1px solid grey;
@@ -99,6 +94,28 @@ img.rounded {
 	font-family: monospace;
   font-size: 1.25em;
 }
+
+/*
+Implement this example for inputs
+https://stackoverflow.com/a/57886227/13173382
+
+.field{
+  position: relative;
+  margin-top:20px;
+}
+input:focus ~ label, input:not(:placeholder-shown) ~ label {
+  top:-13px;
+  font-size:12px;
+}
+label {
+  position: absolute;
+  pointer-events: none;
+  left: 10px;
+  top: 2px;
+  transition: 0.2s ease all;
+  font-size: 15px;
+}
+*/
 
 .btn {
   background-color: #f1f1f1;
@@ -114,11 +131,6 @@ img.rounded {
 	font-family: monospace;
   font-size: 1.25em;
 }
-
-/*
-Implement this example for textinput
-https://stackoverflow.com/a/57886227/13173382
-*/
 
 hr {
 	border: 1px solid #222;

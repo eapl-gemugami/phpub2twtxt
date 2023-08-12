@@ -138,10 +138,12 @@ $twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 <?php } ?>
 	<h3><a href="load_twt_files.php?url=<?= $url ?>">🔄 Refresh timeline</a></h3>
 	<h3><a href="new_twt.php">✍️ New twt</a></h3>
-	<details><summary>Following: <?php echo count($twtFollowingList); ?></summary>
-    <?php foreach ($twtFollowingList as $currentFollower) { ?>
+	<details>
+		<summary>Following: <?php echo count($twtFollowingList); ?></summary>
+<?php foreach ($twtFollowingList as $currentFollower) { ?>
 	<p>
 		<a href="?url=<?= $currentFollower[1] ?>"><?= $currentFollower[0] ?></a> <?= $currentFollower[1] ?>
+		<a href="?remove_url=<?= $currentFollower[1] ?>">Remove</a>
 	</p>
 <?php } ?>
 	</details>

@@ -26,6 +26,8 @@ public_txt_url = "https://eapl.mx/twtxt.txt"
 ; https://www.php.net/manual/en/timezones.php
 timezone = "UTC"
 
+twts_per_page = 50
+
 [security]
 ; Generate it with the TOTP module
 totp_digits = 10

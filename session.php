@@ -16,6 +16,8 @@ session_start([
 ]);
 
 function has_valid_session() {
+	$secret_key = $config['totp_secret'];
+
 	if (isset($_SESSION['valid_session'])) {
 		return true;
 	}

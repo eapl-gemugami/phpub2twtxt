@@ -1,7 +1,4 @@
 <?php
-$config = parse_ini_file('.config');
-$secret_key = $config['totp_secret'];
-
 const COOKIE_NAME = 'remember_user';
 const ENCRYPTION_METHOD = 'aes-256-cbc';
 
@@ -16,6 +13,7 @@ session_start([
 ]);
 
 function has_valid_session() {
+	$config = parse_ini_file('.config');
 	$secret_key = $config['totp_secret'];
 
 	if (isset($_SESSION['valid_session'])) {

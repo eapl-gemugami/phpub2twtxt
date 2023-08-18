@@ -14,7 +14,7 @@ session_start([
 
 function has_valid_session() {
 	$config = parse_ini_file('.config');
-	$secret_key = $config['totp_secret'];
+	$secretKey = $config['totp_secret'];
 
 	if (isset($_SESSION['valid_session'])) {
 		return true;

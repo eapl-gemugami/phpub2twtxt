@@ -14,17 +14,9 @@ $timezone = $config['timezone'];
 
 require_once('session.php');
 
-// Move this to another place
-if (!isset($_SESSION['valid_session']))  {
-	$secretKey = $config['totp_secret'];
-	$cookieVal = decodeCookie($secretKey);
-
-	# Valid cookie ?
-	if ($cookieVal === false) {
-		#echo "Invalid cookie";
-		header('Location: login.php');
-		exit();
-	}
+if (!has_valid_session()) {
+	header('Location: login.php');
+	exit();
 }
 
 $textareaValue = '';

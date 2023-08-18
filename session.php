@@ -5,12 +5,6 @@ $secret_key = $config['totp_secret'];
 const COOKIE_NAME = 'remember_user';
 const ENCRYPTION_METHOD = 'aes-256-cbc';
 
-/*
-if (version_compare(phpversion(), '7.3.0', '<')) {
-	# Add this check for PHP 7.3
-}
-*/
-
 session_start([
 	'name' => 'twtxt_session',
 	'use_strict_mode' => true,
@@ -20,6 +14,20 @@ session_start([
 	'sid_bits_per_character' => 6,
 	'cookie_samesite' => 'Strict', // Not compatible with PHP lower than 7.3
 ]);
+
+function has_valid_session() {
+	if (isset($_SESSION['valid_session'])) {
+		return true;
+	}
+
+	$cookieVal = decodeCookie($secretKey);
+	if ($cookieVal === false) {
+		#echo "Invalid cookie";
+		return false;
+	}
+
+	return true;
+}
 
 function encrypt(string $data, string $key, string $method): string {
 	$ivSize = openssl_cipher_iv_length($method);

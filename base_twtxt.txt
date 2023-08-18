@@ -1,0 +1,27 @@
+# | |___      _| |___  _| |_
+# | __\ \ /\ / / __\ \/ / __|
+# | |_ \ V  V /| |_ >  <| |_
+#  \__| \_/\_/  \__/_/\_\\__|
+#
+# Twtxt is an open, distributed and decentralized microblogging platform
+# for hackers and friends that uses raw text files, easy to read by humans,
+# and with common protocols and free and open.
+#
+# Using twtxt-php from: https://github.com/eapl-gemugami/twtxt-php
+# Know more about twtxt here: https://github.com/buckket/twtxt
+# Using the following extensions:
+# https://github.com/eapl-gemugami/twtxt-php/blob/master/docs/02-metadata-extension.md
+#
+#     version = 2023-06-03
+#        nick =
+#         url =
+#      avatar =
+#       emoji =
+#        link =
+#        lang =
+# description =
+#   discovery =
+#
+# following =
+# follow = user URL
+#~~~#

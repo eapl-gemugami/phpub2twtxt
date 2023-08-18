@@ -1,4 +1,5 @@
 <?php
+$config = parse_ini_file('.config');
 const COOKIE_NAME = 'remember_user';
 const ENCRYPTION_METHOD = 'aes-256-cbc';
 

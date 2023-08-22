@@ -85,8 +85,6 @@ img.rounded {
 }
 
 .input {
-	outline: none;
-	resize: none;
 	border: 1px solid grey;
 	background-color: #000;
 	color: #eee;

@@ -51,7 +51,8 @@ if (isset($_POST['totp'])) {
 <?php } ?>
 			<label for="fname">One Time Password (TOTP)</label>
 			<br>
-  		<input type="text" id="totp" name="totp" class="input" autocomplete="off"><br>
+  		<input type="text" id="totp" name="totp" class="input" autocomplete="off" required>
+			<br>
 			<input type="submit" value="Login" class="btn">
 		</div>
 	</form>

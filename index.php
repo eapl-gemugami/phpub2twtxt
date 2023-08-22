@@ -39,6 +39,9 @@ if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 	die('Not a valid URL');
 }
 
+$validSession = has_valid_session();
+#echo("Valid session: $validSession");
+
 $cacheRefreshTime = $config['cache_refresh_time'];
 $fileContent = getCachedFileContentsOrUpdate($url, $cacheRefreshTime);
 
@@ -131,13 +134,18 @@ $twts = array_slice($twts, $startingTwt, TWTS_PER_PAGE);
 </head>
 <body>
 	<h1><a href=".">twtxt</a></h1>
-<?php if(!empty($_GET['twts'])) { ?>
+<?php if (!empty($_GET['twts'])) { ?>
 	<h2>Twts for <a href="<?= $twtsURL ?>"><?= $twtsURL ?></a></h2>
 <?php } else { ?>
 	<h2>Timeline for <a href="<?= $url ?>"><?= $url ?></a></h2>
 <?php } ?>
 	<h3><a href="load_twt_files.php?url=<?= $url ?>">🔄 Refresh timeline</a></h3>
+<?php if ($validSession) { ?>
 	<h3><a href="new_twt.php">✍️ New twt</a></h3>
+	<h3><a href="follow.php">👀 Follow new URL</a></h3>
+<?php } else { ?>
+	<h3><a href="login.php">👨‍💻 Login</a></h3>
+<?php } ?>
 	<details>
 		<summary>Following: <?php echo count($twtFollowingList); ?></summary>
 <?php foreach ($twtFollowingList as $currentFollower) { ?>

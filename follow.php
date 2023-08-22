@@ -9,8 +9,6 @@ if ($config['debug_mode']) {
 }
 
 $txt_file_path = $config['txt_file_path'];
-$public_txt_url = $config['public_txt_url'];
-$timezone = $config['timezone'];
 
 require_once('session.php');
 
@@ -19,52 +17,37 @@ if (!has_valid_session()) {
 	exit();
 }
 
-$textareaValue = '';
-if (isset($_GET['hash'])) {
-	$hash = $_GET['hash'];
-	$textareaValue = "(#$hash) ";
-}
+if (isset($_POST['url'])) {
+	$url = trim(filter_input(INPUT_POST, 'url'));
+	$nick = trim(filter_input(INPUT_POST, 'nick'));
 
-if (isset($_POST['submit'])) {
-	$new_post = filter_input(INPUT_POST, 'new_post');
-	$new_post = trim($new_post);
-
-	// Replace new lines for Line separator character (U+2028)
-	$new_post = str_replace("\n", "\u{2028}", $new_post);
-	// Remove Carriage return if needed
-	$new_post = str_replace("\r", '', $new_post);
-
-	// TODO: If twt is emply, show an error
-	/*
-	if ($new_post) {
+	if (!$url or !$nick) {
+		die('Fill url and nick.');
 	}
-	*/
 
-	// Check if we have a point to insert the next Twt
-	define('NEW_TWT_MARKER', "#~~~#\n");
+	if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+		die('Not a valid URL');
+	}
 
 	if (!file_exists($txt_file_path)) {
-		echo 'twtxt.txt file does not exist. Check your config.';
-		exit;
+		die('twtxt.txt file does not exist. Check your config.');
 	}
 
 	$contents = file_get_contents($txt_file_path);
 
-	if (!date_default_timezone_set($timezone)) {
-		date_default_timezone_set('UTC');
-	}
+	# Insert new follows before the marker #~~~#
+	define('NEW_TWT_MARKER', "#~~~#\n");
 
-	$twt = date('c') . "\t$new_post\n";
+	$follow_str_to_insert = "# follow = $nick $url";
 
 	if (strpos($contents, NEW_TWT_MARKER) !== false) {
 		// Add the previous marker
 		// Take note that doesn't not work if twtxt file has CRLF line ending
 		// (which is wrong anyway)
-		$twt = NEW_TWT_MARKER . $twt;
-		$contents = str_replace(NEW_TWT_MARKER, $twt, $contents);
+		$follow_str =  $follow_str_to_insert . "\n" . NEW_TWT_MARKER;
+		$contents = str_replace(NEW_TWT_MARKER, $follow_str, $contents);
 	} else {
-		// Fall back if the marker is not found.
-		$contents .= $twt;
+		die('Could not insert the follower into the twtxt.txt file. Check that the marker exists.');
 	}
 
 	// TODO: Add error handling if write to the file fails
@@ -86,12 +69,16 @@ if (isset($_POST['submit'])) {
 <body>
 <h1><a href=".">twtxt</a></h1>
 	<form method="POST" class="column">
-		<div id="posting">
-			<textarea class="textinput" id="new_post" name="new_post"
-				rows="4" cols="100" autofocus required
-				placeholder="Your twt"><?= $textareaValue ?></textarea>
+		<div id="follow">
+			<label for="url">URL to follow</label>
 			<br>
-			<input class="btn" type="submit" value="Post" name="submit">
+			<input type="url" id="url" name="url" class="input" size="50" autocomplete="off" required>
+			<br>
+			<label for="nick">Nick</label>
+			<br>
+			<input type="text" id="nick" name="nick" class="input" size="50" autocomplete="off" required>
+			<br>
+			<input type="submit" value="Follow" class="btn">
 		</div>
 	</form>
 </body>
